@@ -1,0 +1,52 @@
+$fontJoc: 'DotGothic16',
+sans-serif;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: rgb(16, 2, 105);
+    background: radial-gradient(circle, rgba(16, 2, 105, 1) 27%, rgba(12, 10, 56, 1) 83%);
+    font-family: $fontJoc;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.menu {
+    background-color: rgb(145, 174, 236);
+    border: 2px solid black;
+    border-radius: 30px;
+    padding: 2rem;
+    min-width: 25%;
+    min-height: 60vh;
+    display: grid;
+    box-shadow: 0 20px 20px rgba(0, 0, 0, 1);
+    h1 {
+        font-weight: 900;
+        font-size: 2.5rem;
+        margin: auto;
+    }
+    li {
+        list-style: none;
+        a {
+            display: flex;
+            justify-content: center;
+            text-decoration: none;
+            color: black;
+            font-size: 1.5rem;
+            border: solid 2px black;
+            border-radius: 50px;
+            margin: 1.5rem 1rem;
+            padding: 0.5rem 4rem;
+            &:hover {
+                background-color: rgba(65, 60, 60, 0.609);
+                border-color: rgb(65, 60, 60);
+                color: white;
+            }
+        }
+    }
+}
