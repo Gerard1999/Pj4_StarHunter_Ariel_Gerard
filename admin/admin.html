@@ -5,12 +5,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="../js/admin-controller.js"></script>
+    <link rel="stylesheet" href="../css/admin.css">
     <title>Document</title>
 </head>
-<body>
+<body onload="init()">
     <h1>Start Hunters</h1>
-    <label for="amplada">Amplada</label>
-    <input id="amplada" type="number" value="">
+    <div id="configuracio">
+        <div class="configuracio-child">
+            <label for="amplada">Amplada: </label>
+            <input id="amplada" type="number" step="3" min="0" value="">
+        </div>
+        <div class="configuracio-child">
+            <label for="amplada">Alçada: </label>
+            <input id="alcada" type="number" step="3" min="0" value="">
+        </div>
+    </div>
     <canvas id="canvas" width="600" height="450" style="border:1px solid #000000;"></canvas>
 </body>
 </html>

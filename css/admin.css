@@ -1,0 +1,8 @@
+#configuracio {
+    display: flex;
+    flex-direction:column;
+
+}
+.configuracio-child {
+    text-align:left
+}
