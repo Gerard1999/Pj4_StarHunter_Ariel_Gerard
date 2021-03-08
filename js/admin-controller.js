@@ -4,8 +4,8 @@ function getCanvas() {
     let alcada = document.getElementById("alcada");
     let amplada = document.getElementById("amplada");
     // Default values witdh and height
-    alcada.value = canvas.clientWidth;
-    amplada.value = canvas.clientHeight;
+    alcada.value = canvas.clientHeight;
+    amplada.value = canvas.clientWidth;
 
     alcada.addEventListener("input", () => {
         setAlcada(canvas, alcada.value)
@@ -15,10 +15,10 @@ function getCanvas() {
     })
 }
 function setAmplada(canvas, amplada) {
-    canvas.height = amplada;
+    canvas.width = amplada;
 }
 function setAlcada(canvas, alcada) {
-    canvas.width = alcada;
+    canvas.height = alcada;
 }
 function init() {
     getCanvas();

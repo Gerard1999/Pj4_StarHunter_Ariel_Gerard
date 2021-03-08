@@ -1,0 +1,32 @@
+.admin {
+    background-color: rgb(145, 174, 236);
+    border-radius: 30px;
+    padding: 4rem;
+    min-width: 25%;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 20px 20px rgba(0, 0, 0, 1);
+    #configuracio {
+        padding: 2rem;
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        margin: 1.5rem;
+        font-size: 1.2rem;
+        input {
+            border-radius: 25px;
+            padding: 1%;
+            background-color: rgba(180, 220, 246, 0.383);
+            border: none;
+            text-align: center;
+            margin: 0rem 0.5rem;
+            font-size: 1rem;
+        }
+    }
+    canvas {
+        background: rgba(180, 220, 246, 0.383);
+    }
+}
