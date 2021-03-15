@@ -59,3 +59,35 @@ var server = http.createServer((req, res) => {
 
 
 server.listen(8080, () => console.log("Servidor en marxa..."));
+
+
+
+/*******************************************
+*				WEB SOCKETS
+*******************************************/
+
+// Carregar el mòdul per WebSockets
+const WebSocket = require('ws');
+
+// Crear servidor WebSocket
+const wss = new WebSocket.Server({ port: 8180 });
+
+wss.on('connection', (remitent, peticio) => {
+  remitent.on('message',message => {
+	  console.log("missatge: " + message);
+		//processar(remitent, message);
+	});
+});
+
+/**
+ * Funció per fer Broadcast
+ * @param missatge : Cos del missatge
+ * @param clientExclos : ID usuari que no rebrà el missatge
+ */
+function broadcast(missatge, clientExclos) {
+	wss.clients.forEach(function each(client) {
+		if (client.readyState === WebSocket.OPEN && client !== clientExclos) {
+			client.send(missatge);
+		}
+	});
+}
