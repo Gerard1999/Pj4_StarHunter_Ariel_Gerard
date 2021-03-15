@@ -74,7 +74,6 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
   remitent.on('message',message => {
-	  console.log(JSON.parse(message).action);
 		processar(remitent, message);
 	});
 });
@@ -93,6 +92,22 @@ function broadcast(missatge, clientExclos) {
 }
 
 
+/****************************
+ * 		DADES GENERALS
+ ***************************/
+ var jugadors = [];
+ var coordenadesNaus = [];
+ 
+ // Últim identificador assignat
+ var jugadorID = 0;
+
+
+/**
+ * Funció principal que gestiona els missatges rebuts des del client.
+ * 
+ * @param ws: Connexió socket del client
+ * @param m: Missatge rebut
+ */
 function processar(ws, missatge) {
 	var action = JSON.parse(missatge).action;
 	//console.log(JSON.parse(missatge.action));
@@ -144,7 +159,10 @@ function crearAdmin(ws){
  * @param ws: Connexió socket del client
  */
  function crearJugador(ws){
-
+	jugadorID++;
+	jugadors.push(jugadorID);
+	ws.send(JSON.stringify({msg: "connectat", id:jugadorID, points:coordenadesNaus}));
+	console.log("Jugador " + jugadorID + " connectat");
 }
 
 
