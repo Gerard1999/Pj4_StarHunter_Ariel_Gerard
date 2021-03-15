@@ -97,15 +97,23 @@ function processar(ws, missatge) {
 	var action = JSON.parse(missatge).action;
 	//console.log(JSON.parse(missatge.action));
 	switch (action) {
-		/*case "add_painter":
-			console.log("Creant Pintor...");
-			crearPintor(ws,missatge);
+		case "createAdmin":
+			console.log("Creant Administrador...");
+			crearAdmin(ws);
 			break;
-		case "draw":
-			console.log("Drawing...");
-			dibuixar(ws, missatge);
+		case "addPlayer":
+			console.log("Creant Jugador...");
+			crearJugador(ws);
 			break;
-		case "undo":
+		case "changeSize":
+			console.log("Canviant Mides...");
+			canviarMides(ws, m);
+			break;
+		case "move":
+			console.log("Moving...");
+			moureNau(ws, m)
+			break;
+		/*case "undo":
 			console.log("Desfent última línia...");
 			break;
 		case "delete":
@@ -114,4 +122,51 @@ function processar(ws, missatge) {
 		default:*/
 
 	}
+}
+
+/**
+ * Aquesta funció crea l'admin. Només hi podrà haver un
+ * (Nose si des d'aquí, però s'haurà d'evitar que entri algú altre com admin
+ * i també evitar poder entrar a "Jugar" sense haver entrat a "Admin" abans).
+ * 
+ * @param ws: Connexió socket del client
+ */
+function crearAdmin(ws){
+
+}
+
+
+/**
+ * Aquesta funció crea un nou jugador amb un identificador únic
+ * Li envia aquest id i les coordenades de les naus ja inicialitzades
+ * Li envia les coordenades de la nau del nou jugador
+ * 
+ * @param ws: Connexió socket del client
+ */
+ function crearJugador(ws){
+
+}
+
+
+/**
+ * Aquesta funció actualitza les noves mides del canvas rebudes des de l'admin
+ * Envia a tothom les noves mides
+ * 
+ * @param ws: Connexió socket del client
+ * @param m: Missatge rebut
+ */
+function canviarMides(ws, m) {
+
+}
+
+
+/**
+ * Aquesta funció actualitza les noves coordenades de la nau moguda
+ * Envia a tothom les noves coordenades
+ * 
+ * @param ws: Connexió socket del client
+ * @param m: Missatge rebut
+ */
+function moureNau(ws, m) {
+
 }

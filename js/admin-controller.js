@@ -45,6 +45,6 @@ function init() {
 
 	connexio.onopen = (event)=>{
 
-		connexio.send(JSON.stringify({action:"administrate"}));
+		connexio.send(JSON.stringify({action:"createAdmin"}));
     }
 }
