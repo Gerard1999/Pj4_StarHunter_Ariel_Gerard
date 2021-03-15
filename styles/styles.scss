@@ -32,21 +32,21 @@ body {
     }
     li {
         list-style: none;
-        a {
-            display: flex;
-            justify-content: center;
-            text-decoration: none;
-            color: black;
-            font-size: 1.5rem;
-            border: solid 2px black;
-            border-radius: 50px;
-            margin: 1.5rem 1rem;
-            padding: 0.5rem 4rem;
-            &:hover {
-                background-color: rgba(65, 60, 60, 0.609);
-                border-color: rgb(65, 60, 60);
-                color: white;
-            }
-        }
+    }
+}
+.boto {
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+    border: solid 2px black;
+    border-radius: 50px;
+    margin: 1.5rem 1rem;
+    padding: 0.5rem 4rem;
+    &:hover {
+        background-color: rgba(65, 60, 60, 0.609);
+        border-color: rgb(65, 60, 60);
+        color: white;
     }
 }

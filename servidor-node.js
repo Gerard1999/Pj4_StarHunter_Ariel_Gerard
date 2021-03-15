@@ -48,7 +48,6 @@ var server = http.createServer((req, res) => {
             var filename = `.${dades.pathname}`; // obtenim el path de tots els fitxers que depenen del html, com per exemple el CSS 
 			if (filename == "./") filename += "index.html"; // Posar per defecte el index.html
             var tipusDocument = contentType(filename); // Obtenim el tipus de document text/html, text/css, etc.
-            console.log(tipusDocument)
             if (tipusDocument) fs.readFile(filename, function(err, data) { enviarArxiu(err, data, res, tipusDocument); });
 			else {
 				resposta.writeHead(400, {'Content-Type': 'text/html'});

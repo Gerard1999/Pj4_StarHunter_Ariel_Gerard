@@ -10,6 +10,10 @@
   justify-content: center;
   box-shadow: 0 20px 20px black;
 }
+.admin .boto {
+  padding: 0.3rem 0.6rem;
+  font-size: 2vh;
+}
 .admin #configuracio {
   padding: 2rem;
   display: flex;
@@ -64,7 +68,8 @@ body {
 .menu li {
   list-style: none;
 }
-.menu li a {
+
+.boto {
   display: flex;
   justify-content: center;
   text-decoration: none;
@@ -75,7 +80,7 @@ body {
   margin: 1.5rem 1rem;
   padding: 0.5rem 4rem;
 }
-.menu li a:hover {
+.boto:hover {
   background-color: rgba(65, 60, 60, 0.609);
   border-color: #413c3c;
   color: white;

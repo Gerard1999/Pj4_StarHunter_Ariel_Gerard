@@ -9,6 +9,12 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 20px 20px rgba(0, 0, 0, 1);
+
+    .boto{
+        padding: 0.3rem 0.6rem;
+        font-size: 2vh;
+    }
+
     #configuracio {
         padding: 2rem;
         display: flex;
