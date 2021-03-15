@@ -58,7 +58,7 @@ var server = http.createServer((req, res) => {
 });
 
 
-server.listen(8080, () => console.log("Servidor en marxa..."));
+server.listen(8080, () => console.log("Servidor en marxa!"));
 
 
 
@@ -74,8 +74,8 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
   remitent.on('message',message => {
-	  console.log("missatge: " + message);
-		//processar(remitent, message);
+	  console.log(JSON.parse(message).action);
+		processar(remitent, message);
 	});
 });
 
@@ -90,4 +90,28 @@ function broadcast(missatge, clientExclos) {
 			client.send(missatge);
 		}
 	});
+}
+
+
+function processar(ws, missatge) {
+	var action = JSON.parse(missatge).action;
+	//console.log(JSON.parse(missatge.action));
+	switch (action) {
+		/*case "add_painter":
+			console.log("Creant Pintor...");
+			crearPintor(ws,missatge);
+			break;
+		case "draw":
+			console.log("Drawing...");
+			dibuixar(ws, missatge);
+			break;
+		case "undo":
+			console.log("Desfent última línia...");
+			break;
+		case "delete":
+			console.log("Esborrant línies...");
+			break;
+		default:*/
+
+	}
 }

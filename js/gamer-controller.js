@@ -10,6 +10,6 @@ function init() {
 
 	connexio.onopen = (event)=>{
 
-		connexio.send(JSON.stringify({action:"jugant"}));
+		connexio.send(JSON.stringify({action:"playing"}));
     }
 }
