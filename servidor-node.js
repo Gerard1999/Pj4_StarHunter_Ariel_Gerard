@@ -113,20 +113,20 @@ function processar(ws, missatge) {
     //console.log(JSON.parse(missatge.action));
     switch (action) {
         case "createAdmin":
-            console.log("Creant Administrador...");
+            console.log("Creating Admin...");
             crearAdmin(ws);
             break;
         case "addPlayer":
-            console.log("Creant Jugador...");
+            console.log("Creating Player...");
             crearJugador(ws);
             break;
         case "changeSize":
-            console.log("Canviant Mides...");
-            canviarMides(ws, m);
+            console.log("Changing Sizes...");
+            canviarMides(ws, missatge);
             break;
         case "move":
             console.log("Moving...");
-            moureNau(ws, m)
+            moureNau(ws, missatge)
             break;
             /*case "undo":
             	console.log("Desfent última línia...");
@@ -187,5 +187,14 @@ function canviarMides(ws, m) {
  * @param m: Missatge rebut
  */
 function moureNau(ws, m) {
+    var nauX = JSON.parse(m).X;
+    var nauY = JSON.parse(m).Y;
+    var idJugador = JSON.parse(m).id;
+
+    var xy = { id: idJugador, X: nauX, Y: nauY };
+    console.log(xy);
+
+    coordenadesNaus.push(xy);
+    broadcast(JSON.stringify({ msg: "printShips", coordenades: coordenadesNaus }), idJugador);
 
 }
