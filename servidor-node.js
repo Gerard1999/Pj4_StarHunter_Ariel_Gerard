@@ -6,31 +6,31 @@ var fs = require('fs');
 
 // Tipus de extensions permesses
 const FILE_TYPES = {
-	html:"text/html",
-	css:"text/css",
-	js:"text/js",
-	svg:"image/svg+xml",
-	png:"image/png",
-	gif:"image/gif",
-	ico:"image/ico",
-	jpg:"image/jpg",
-	jpeg:"image/jpg",
+    html: "text/html",
+    css: "text/css",
+    js: "text/js",
+    svg: "image/svg+xml",
+    png: "image/png",
+    gif: "image/gif",
+    ico: "image/ico",
+    jpg: "image/jpg",
+    jpeg: "image/jpg",
 };
 // Obtenir el tipus de extensió permesa
 function contentType(filename) {
-	var ext = filename.split('.').pop(); // Obtenim l'extensió del fitxer html, css, jpg...
-	if (ext in FILE_TYPES) return FILE_TYPES[ext]; // Comproven si es trova dintre del nostre enum
-	else return undefined;
+    var ext = filename.split('.').pop(); // Obtenim l'extensió del fitxer html, css, jpg...
+    if (ext in FILE_TYPES) return FILE_TYPES[ext]; // Comproven si es trova dintre del nostre enum
+    else return undefined;
 }
 // Envia l'arxiu al client amb un error si el troba llavors el mostrarà
 function enviarArxiu(err, dades, resposta, tDocument) {
-	if (err) {
-		resposta.writeHead(404, {'Content-Type': 'text/html'});
-		resposta.end("404 Not Found");
-		return;
-	}
-	resposta.writeHead(200, {'Content-Type': tDocument});
-	resposta.end(dades);
+    if (err) {
+        resposta.writeHead(404, { 'Content-Type': 'text/html' });
+        resposta.end("404 Not Found");
+        return;
+    }
+    resposta.writeHead(200, { 'Content-Type': tDocument });
+    resposta.end(dades);
 }
 
 var server = http.createServer((req, res) => {
@@ -46,13 +46,13 @@ var server = http.createServer((req, res) => {
             const baseURL = 'http://' + req.headers.host + '/'; // obtenemos la URL (http://localhost/)
             dades = new URL(req.url, baseURL); // Creem una nova URL (req.url = index.html por ejemplo)
             var filename = `.${dades.pathname}`; // obtenim el path de tots els fitxers que depenen del html, com per exemple el CSS 
-			if (filename == "./") filename += "index.html"; // Posar per defecte el index.html
+            if (filename == "./") filename += "index.html"; // Posar per defecte el index.html
             var tipusDocument = contentType(filename); // Obtenim el tipus de document text/html, text/css, etc.
             if (tipusDocument) fs.readFile(filename, function(err, data) { enviarArxiu(err, data, res, tipusDocument); });
-			else {
-				res.writeHead(400, {'Content-Type': 'text/html'});
-				res.end("Tipus d'arxiu desconegut.");
-			}
+            else {
+                res.writeHead(400, { 'Content-Type': 'text/html' });
+                res.end("Tipus d'arxiu desconegut.");
+            }
         }
     });
 });
@@ -63,8 +63,8 @@ server.listen(8080, () => console.log("Servidor en marxa!"));
 
 
 /*******************************************
-*				WEB SOCKETS
-*******************************************/
+ *				WEB SOCKETS
+ *******************************************/
 
 // Carregar el mòdul per WebSockets
 const WebSocket = require('ws');
@@ -73,9 +73,9 @@ const WebSocket = require('ws');
 const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
-  remitent.on('message',message => {
-		processar(remitent, message);
-	});
+    remitent.on('message', message => {
+        processar(remitent, message);
+    });
 });
 
 /**
@@ -84,22 +84,22 @@ wss.on('connection', (remitent, peticio) => {
  * @param clientExclos : ID usuari que no rebrà el missatge
  */
 function broadcast(missatge, clientExclos) {
-	wss.clients.forEach(function each(client) {
-		if (client.readyState === WebSocket.OPEN && client !== clientExclos) {
-			client.send(missatge);
-		}
-	});
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN && client !== clientExclos) {
+            client.send(missatge);
+        }
+    });
 }
 
 
 /****************************
  * 		DADES GENERALS
  ***************************/
- var jugadors = [];
- var coordenadesNaus = [];
- 
- // Últim identificador assignat
- var jugadorID = 0;
+var jugadors = [];
+var coordenadesNaus = [];
+
+// Últim identificador assignat
+var jugadorID = 0;
 
 
 /**
@@ -109,34 +109,34 @@ function broadcast(missatge, clientExclos) {
  * @param m: Missatge rebut
  */
 function processar(ws, missatge) {
-	var action = JSON.parse(missatge).action;
-	//console.log(JSON.parse(missatge.action));
-	switch (action) {
-		case "createAdmin":
-			console.log("Creant Administrador...");
-			crearAdmin(ws);
-			break;
-		case "addPlayer":
-			console.log("Creant Jugador...");
-			crearJugador(ws);
-			break;
-		case "changeSize":
-			console.log("Canviant Mides...");
-			canviarMides(ws, m);
-			break;
-		case "move":
-			console.log("Moving...");
-			moureNau(ws, m)
-			break;
-		/*case "undo":
-			console.log("Desfent última línia...");
-			break;
-		case "delete":
-			console.log("Esborrant línies...");
-			break;
-		default:*/
+    var action = JSON.parse(missatge).action;
+    //console.log(JSON.parse(missatge.action));
+    switch (action) {
+        case "createAdmin":
+            console.log("Creant Administrador...");
+            crearAdmin(ws);
+            break;
+        case "addPlayer":
+            console.log("Creant Jugador...");
+            crearJugador(ws);
+            break;
+        case "changeSize":
+            console.log("Canviant Mides...");
+            canviarMides(ws, m);
+            break;
+        case "move":
+            console.log("Moving...");
+            moureNau(ws, m)
+            break;
+            /*case "undo":
+            	console.log("Desfent última línia...");
+            	break;
+            case "delete":
+            	console.log("Esborrant línies...");
+            	break;
+            default:*/
 
-	}
+    }
 }
 
 /**
@@ -146,7 +146,7 @@ function processar(ws, missatge) {
  * 
  * @param ws: Connexió socket del client
  */
-function crearAdmin(ws){
+function crearAdmin(ws) {
 
 }
 
@@ -158,12 +158,12 @@ function crearAdmin(ws){
  * 
  * @param ws: Connexió socket del client
  */
- function crearJugador(ws){
-	jugadorID++;
-	jugadors.push(jugadorID);
-	ws.send(JSON.stringify({msg: "connected", id:jugadorID, points:coordenadesNaus}));
-	console.log("Jugador " + jugadorID + " connectat");
-	console.log("Ara hi ha " + jugadors.length + " jugadors.");
+function crearJugador(ws) {
+    jugadorID++;
+    jugadors.push(jugadorID);
+    ws.send(JSON.stringify({ msg: "connected", id: jugadorID, points: coordenadesNaus }));
+    console.log("Jugador " + jugadorID + " connectat");
+    console.log("Ara hi ha " + jugadors.length + " jugadors.");
 }
 
 
