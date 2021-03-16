@@ -50,8 +50,8 @@ var server = http.createServer((req, res) => {
             var tipusDocument = contentType(filename); // Obtenim el tipus de document text/html, text/css, etc.
             if (tipusDocument) fs.readFile(filename, function(err, data) { enviarArxiu(err, data, res, tipusDocument); });
 			else {
-				resposta.writeHead(400, {'Content-Type': 'text/html'});
-				resposta.end("Tipus d'arxiu desconegut.");
+				res.writeHead(400, {'Content-Type': 'text/html'});
+				res.end("Tipus d'arxiu desconegut.");
 			}
         }
     });
@@ -161,8 +161,9 @@ function crearAdmin(ws){
  function crearJugador(ws){
 	jugadorID++;
 	jugadors.push(jugadorID);
-	ws.send(JSON.stringify({msg: "connectat", id:jugadorID, points:coordenadesNaus}));
+	ws.send(JSON.stringify({msg: "connected", id:jugadorID, points:coordenadesNaus}));
 	console.log("Jugador " + jugadorID + " connectat");
+	console.log("Ara hi ha " + jugadors.length + " jugadors.");
 }
 
 

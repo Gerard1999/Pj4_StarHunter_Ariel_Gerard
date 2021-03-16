@@ -48,3 +48,6 @@ function init() {
 		connexio.send(JSON.stringify({action:"createAdmin"}));
     }
 }
+
+
+window.onload = init;
