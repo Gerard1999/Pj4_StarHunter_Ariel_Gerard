@@ -1,4 +1,3 @@
-
 /**
  * Funció per canviar les mesures del canvas.
  */

@@ -2,12 +2,15 @@
  * 		DADES GLOBALS
  *************************/
 //Canvas
-var canvas;
-var ctx;
+var canvas  = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
 
 //Mesures canvas
-var amplada;
-var altura;
+var amplada = canvas.clientWidth;
+var altura = canvas.clientHeight;;
+
+// Variabe nau
+var spaceShip;
 
 //Posicions nau
 var nauX;
@@ -20,23 +23,19 @@ var cosNau = 64; //64 x 64 píxels
 //ID JUGADOR:
 var id;
 
+// Objecte per enmagatzemar la nostra tecla premuda
+var keysPress = {};
 
 /**
  * Funció que es crida al obrir la pàgina, carrega la imatge de la nau
  * al centre inferior de la pantalla
  */
-function crearNau() {
-    canvas = document.getElementById("canvas");
-    ctx = canvas.getContext("2d");
 
-
-    img.src = "../images/nau64px.png";
+function crearNau () {
+    spaceShip = new Image();
+    spaceShip.src = "../images/nau64px.png";
     nauX = canvas.clientWidth / 2 - 32;
     nauY = canvas.clientHeight - 64;
-    amplada = canvas.clientWidth;
-    altura = canvas.clientHeight;
-    img.onload = () => { ctx.drawImage(img, nauX, nauY); }
-
     connexio.send(JSON.stringify({ action: "move", X: nauX, Y: nauY, id: id }));
 }
 
@@ -67,7 +66,6 @@ function moureNau(e) {
         }, 1);
         //Si es deixa d'apretar, cancel·la el setInterval de moure
         document.addEventListener("keyup", () => { clearInterval(moure); });
-
     }
     if (esquerra) {
         var moure = setInterval(function() {
@@ -102,6 +100,36 @@ function ubicarNaus(coordenades) {
     });
 }
 
+/**
+ * Events alhora de pulsar una tecla
+ */
+
+window.addEventListener("keydown", function (e) {
+  keysPress[e.key] = true; // El true només és per indicar el valor del key del objecte
+}, false);
+
+window.addEventListener("keyup", function (e) {
+  // Amb el event KeyUp el que fem es aturar perquè eliminem la key que es troba en el nostre objecte keysDown
+  // la nau ja que aturen la funció recursiva 
+  delete keysPress[e.key]; 
+}, false);
+
+// // //New update with keyboard controls
+function updateCanvas () {
+  // Moure nau amunt
+  if ("ArrowUp" in keysPress || "w" in keysPress) nauY -= 2;
+  // Moure nau abaix
+  if ("ArrowDown" in keysPress || "s" in keysPress) nauY += 2; 
+  // Moure nau ezquerra
+  if ("ArrowLeft" in keysPress || "a" in keysPress) nauX -= 2;
+  // Moure nau dreta
+  if ("ArrowRight" in keysPress || "d" in keysPress) nauX += 2; 
+  ctx.fillStyle = '#b6ddf6' // Background del Canvas
+  ctx.fillRect(0, 0, amplada, altura); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
+  ctx.drawImage(spaceShip, nauX, nauY); // Dibuixen la nostra nau en una nova posició
+  requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
+}
+
 function init() {
 
     var domini;
@@ -111,8 +139,6 @@ function init() {
     connexio = new WebSocket(url);
 
     //Detecta quan s'apreten tecles i crida la funció moureNau.
-    document.addEventListener("keydown", moureNau);
-
     connexio.onopen = (event) => {
 
         connexio.send(JSON.stringify({ action: "addPlayer" }));
@@ -124,16 +150,16 @@ function init() {
                     console.log("Connecting user " + missatge.id);
                     id = missatge.id;
                     crearNau();
+                    updateCanvas(); 
                     break;
-
                 case "printShips":
                     console.log(missatge.coordenades);
                     ubicarNaus(missatge.coordenades);
+                    break;
             }
         }
 
     }
 }
 
-
-window.onload = init;
+init();
