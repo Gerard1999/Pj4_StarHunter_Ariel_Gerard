@@ -11,41 +11,46 @@ function getCanvas() {
     amplada.value = canvas.clientWidth;
 
     alcada.addEventListener("input", () => {
-        setAlcada(canvas, alcada.value)
+        setCanvas(canvas, alcada.value, amplada.value)
     })
     amplada.addEventListener("input", () => {
-        setAmplada(canvas, amplada.value)
+        setCanvas(canvas, alcada.value, amplada.value)
     })
 }
 
 /*
 * Funció per canviar l'amplada
 */
-function setAmplada(canvas, amplada) {
+function setCanvas(canvas, alcada, amplada) {
     canvas.width = amplada;
-}
-
-/*
-* Funció per canviar l'altura
-*/
-function setAlcada(canvas, alcada) {
     canvas.height = alcada;
+    connexio.send(JSON.stringify({action:"changeSize", amplada: amplada, alcada: alcada}))
 }
 
+/* Funció per obrir i tencar una sessió*/
+function openConnection() { 
+	connexio.onopen = function() { // Obrir sessió
+        connexio.send(JSON.stringify({action:"createAdmin"})
+		);
+	}
+	connexio.onclose = function() { // Si la sessió s'ha tancat
+		alert("Se ha tancat la connexió");
+		window.location = "gamer.html";
+	}
+	connexio.onerrors = function() { // Si la connexió té un error..
+		alert("Se ha interromput la connexió!");
+		window.location = "gamer.html";
+	}
+}
 
 function init() {
     getCanvas();
-
     var domini;
 	if (window.location.protocol == "file:") domini = "localhost";
 	else domini = window.location.hostname;
 	var url = "ws://" + domini + ":8180";
 	connexio = new WebSocket(url);
-
-	connexio.onopen = (event)=>{
-
-		connexio.send(JSON.stringify({action:"createAdmin"}));
-    }
+    openConnection();
 }
 
 

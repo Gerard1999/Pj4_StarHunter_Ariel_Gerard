@@ -120,8 +120,8 @@ function processar(ws, missatge) {
             crearJugador(ws, message);
             break;
         case "changeSize":
-            //console.log("Changing Sizes...");
-            //canviarMides(ws, missatge);
+            console.log("Changing Sizes...");
+            canviarMides(ws, message);
             break;
         case "move":
             console.log("Moving...");
@@ -150,7 +150,6 @@ function crearAdmin(ws) {
 
 }
 
-
 /**
  * Aquesta funció crea un nou jugador amb un identificador únic
  * Li envia aquest id i les coordenades de les naus ja inicialitzades
@@ -174,7 +173,8 @@ function crearJugador(ws, message) {
  * @param m: Missatge rebut
  */
 function canviarMides(ws, m) {
-
+    console.log(m)
+    broadcast(JSON.stringify({msg: "modifyGameClient", amplada: m.amplada, alcada: m.alcada}));
 }
 
 

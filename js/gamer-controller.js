@@ -122,6 +122,11 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 //updateCanvas();
                 // Bucle
                 break;
+            case "modifyGameClient":
+                console.log(missatge.amplada)
+                Game.canvas.width = missatge.amplada;
+                Game.canvas.height = missatge.alcada;
+                break;
             case "moveSpaceShip":
                 spaceShip = nau;
                 spaceShip.img = new Image();
