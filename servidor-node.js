@@ -1,5 +1,5 @@
 //Servidor
-
+var Nau = require('./js/Nau.js'); // Importem la clase Nau
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
@@ -109,24 +109,24 @@ var jugadorID = 0;
  * @param m: Missatge rebut
  */
 function processar(ws, missatge) {
-    var action = JSON.parse(missatge).action;
-    //console.log(JSON.parse(missatge.action));
-    switch (action) {
+    var message = JSON.parse(missatge);
+    switch (message.action) {
         case "createAdmin":
             console.log("Creating Admin...");
             crearAdmin(ws);
             break;
         case "addPlayer":
             console.log("Creating Player...");
-            crearJugador(ws);
+            crearJugador(ws, message);
             break;
         case "changeSize":
-            console.log("Changing Sizes...");
-            canviarMides(ws, missatge);
+            //console.log("Changing Sizes...");
+            //canviarMides(ws, missatge);
             break;
         case "move":
             console.log("Moving...");
-            moureNau(ws, missatge)
+            console.log(message.nau)
+            moureNau(ws, message)
             break;
             /*case "undo":
             	console.log("Desfent última línia...");
@@ -156,14 +156,13 @@ function crearAdmin(ws) {
  * Li envia aquest id i les coordenades de les naus ja inicialitzades
  * Li envia les coordenades de la nau del nou jugador
  * 
- * @param ws: Connexió socket del client
+ * @paravar spaceShipm ws: Connexió socket del client
  */
-function crearJugador(ws) {
-    jugadorID++;
-    jugadors.push(jugadorID);
-    ws.send(JSON.stringify({ msg: "connected", id: jugadorID, points: coordenadesNaus }));
-    console.log("Jugador " + jugadorID + " connectat");
-    console.log("Ara hi ha " + jugadors.length + " jugadors.");
+function crearJugador(ws, message) {
+    let spaceShip = new Nau();
+    spaceShip.id = jugadorID++;
+    jugadors.push(spaceShip);
+    ws.send(JSON.stringify({msg: "connected", nau: spaceShip}));
 }
 
 
@@ -187,14 +186,8 @@ function canviarMides(ws, m) {
  * @param m: Missatge rebut
  */
 function moureNau(ws, m) {
-    var nauX = JSON.parse(m).X;
-    var nauY = JSON.parse(m).Y;
-    var idJugador = JSON.parse(m).id;
-
-    var xy = { id: idJugador, X: nauX, Y: nauY };
-    console.log(xy);
-
-    coordenadesNaus.push(xy);
-    broadcast(JSON.stringify({ msg: "printShips", coordenades: coordenadesNaus }), idJugador);
+    let spaceShip = m.nau;
+    ws.send(JSON.stringify({ msg: "moveSpaceShip", nau: spaceShip }));
+    //broadcast(JSON.stringify({ msg: "moveSpaceShip", coordenades: coordenadesNaus }), idJugador);
 
 }
