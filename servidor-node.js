@@ -101,6 +101,9 @@ var coordenadesNaus = [];
 // Últim identificador assignat
 var jugadorID = 0;
 
+var amplada = 0
+var alcada = 0;
+
 
 /**
  * Funció principal que gestiona els missatges rebuts des del client.
@@ -110,6 +113,7 @@ var jugadorID = 0;
  */
 function processar(ws, missatge) {
     var message = JSON.parse(missatge);
+
     switch (message.action) {
         case "createAdmin":
             console.log("Creating Admin...");
@@ -117,10 +121,12 @@ function processar(ws, missatge) {
             break;
         case "addPlayer":
             console.log("Creating Player...");
-            crearJugador(ws, message);
+            crearJugador();
             break;
         case "changeSize":
             console.log("Changing Sizes...");
+            amplada = message.amplada;
+            alcada = message.alcada;
             canviarMides(ws, message);
             break;
         case "move":
@@ -157,11 +163,11 @@ function crearAdmin(ws) {
  * 
  * @paravar spaceShipm ws: Connexió socket del client
  */
-function crearJugador(ws, message) {
+function crearJugador() {
     let spaceShip = new Nau();
     spaceShip.id = jugadorID++;
     jugadors.push(spaceShip);
-    ws.send(JSON.stringify({msg: "connected", nau: spaceShip}));
+    broadcast(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
 }
 
 
@@ -173,8 +179,7 @@ function crearJugador(ws, message) {
  * @param m: Missatge rebut
  */
 function canviarMides(ws, m) {
-    console.log(m)
-    broadcast(JSON.stringify({msg: "modifyGameClient", amplada: m.amplada, alcada: m.alcada}));
+    broadcast(JSON.stringify({msg: "connected", amplada: m.amplada, alcada: m.alcada}));
 }
 
 

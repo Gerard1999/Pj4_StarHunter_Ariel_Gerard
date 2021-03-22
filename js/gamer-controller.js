@@ -24,8 +24,8 @@ var id;
 function createNau (nau) {
     spaceShip = nau; // Asignem la nostra variable global Spaceship i fiquen dintre l'objecte nau
     id = spaceShip.id; // Afegim l'id del nostre jugador actualss
-    nauX = amplada / 2 - 32;
-    nauY = altura - 64;
+    nauX = Game.canvas.clientWidth / 2 - 32;
+    nauY = Game.canvas.clientHeight - 64;
     spaceShip.img = new Image();
     spaceShip.img.src = "../images/nau64px.png";
     spaceShip.x = nauX;
@@ -34,8 +34,8 @@ function createNau (nau) {
 
 function centerNau () {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
-    Game.ctx.fillRect(0, 0, amplada, altura);
-    spaceShip.img.onload = () => {Game.ctx.drawImage(spaceShip.img, nauX, nauY)}; // Centren l'imatge
+    Game.ctx.fillRect(0, 0, Game.canvas.clientWidth, Game.canvas.clientHeight);
+    spaceShip.img.onload = () => {Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y)}; // Centren l'imatge
 }
 
 /**
@@ -116,23 +116,26 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
 		let missatge = JSON.parse(message.data), nau;
         nau = missatge.nau;
         switch (missatge.msg) {
-            case "connected":      
+            case "connected":
+                console.log(missatge)
+                Game.canvas.width = missatge.amplada;
+                Game.canvas.height = missatge.alcada;      
                 createNau(nau); // Crear la nau
                 centerNau(); // Centrar la nau
                 //updateCanvas();
                 // Bucle
                 break;
             case "modifyGameClient":
-                console.log(missatge.amplada)
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
+                centerNau();
                 break;
             case "moveSpaceShip":
                 spaceShip = nau;
                 spaceShip.img = new Image();
                 spaceShip.img.src = "../images/nau64px.png";
                 console.log(nau);
-                updateCanvas();
+                //updateCanvas();
                 break;
         }
 	}
