@@ -63,7 +63,7 @@ window.addEventListener("keydown", function (e) {
 window.addEventListener("keyup", function (e) {
   // Amb el event KeyUp el que fem es aturar perquè eliminem la key que es troba en el nostre objecte keysDown
   // la nau ja que aturen la funció recursiva
-  delete Game.keysPress[e.key]; 
+  delete Game.keysPress[e.key];
   e.preventDefault();
 }, false);
 
@@ -76,21 +76,21 @@ window.addEventListener("keyup", function (e) {
     spaceShip.img.src = "../images/nau64px.png";
     // Moure nau amunt
     if ("ArrowUp" in Game.keysPress || "w" in Game.keysPress) 
-    spaceShip.y > -64 ? spaceShip.y -= spaceShip.speed : spaceShip.y = altura;
-    // Moure nau abaix
+    spaceShip.y > -64 ? spaceShip.y -= spaceShip.speed : spaceShip.y = Game.canvas.height;
+    // Moure nwau abaix
     if ("ArrowDown" in Game.keysPress || "s" in Game.keysPress) 
-        spaceShip.y < altura ? spaceShip.y += spaceShip.speed : spaceShip.y = -64;
+        spaceShip.y < Game.canvas.width ? spaceShip.y += spaceShip.speed : spaceShip.y = -64;
     // Moure nau ezquerra
     if ("ArrowLeft" in Game.keysPress || "a" in Game.keysPress) 
-        spaceShip.x > -64 ? spaceShip.x -= spaceShip.speed : spaceShip.x = amplada;
+        spaceShip.x > -64 ? spaceShip.x -= spaceShip.speed : spaceShip.x = Game.canvas.width;
     // Moure nau dreta
     if ("ArrowRight" in Game.keysPress || "d" in Game.keysPress) 
-        spaceShip.x < amplada ? spaceShip.x += spaceShip.speed : spaceShip.x = -64;
+        spaceShip.x < Game.canvas.width ? spaceShip.x += spaceShip.speed : spaceShip.x = -64;
         
     Game.ctx.fillStyle = '#b6ddf6' // Background del Canvas
-    Game.ctx.fillRect(0, 0, amplada, altura); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
+    Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
     Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y); // Dibuixen la nostra nau en una nova posició
-    Game.render(updateCanvas) // Actualitzen el canvas amb les noves posicions
+    requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
     //spaceShip.img.onload = () => {Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y)};
 }
 
@@ -122,12 +122,11 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 Game.canvas.height = missatge.alcada;      
                 createNau(nau); // Crear la nau
                 centerNau(); // Centrar la nau
-                //updateCanvas();
                 // Bucle
                 break;
             case "modifyGameClient":
-                Game.canvas.width = missatge.amplada;
-                Game.canvas.height = missatge.alcada;
+                //Game.canvas.width = missatge.amplada;
+                //Game.canvas.height = missatge.alcada;
                 centerNau();
                 break;
             case "moveSpaceShip":
@@ -135,12 +134,15 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 spaceShip.img = new Image();
                 spaceShip.img.src = "../images/nau64px.png";
                 console.log(nau);
-                //updateCanvas();
+                if(moure) {
+                    updateCanvas();
+                    moure = false;
+                }
                 break;
         }
 	}
 }
-
+let moure = true;
 function init() {
     var domini;
     if (window.location.protocol == "file:") domini = "localhost";
