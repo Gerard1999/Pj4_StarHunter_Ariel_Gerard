@@ -1,5 +1,6 @@
 //Servidor
 var Nau = require('./js/Nau.js'); // Importem la clase Nau
+var Star = require('./js/Star.js'); // Importem la clase Star
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
@@ -167,6 +168,7 @@ function crearJugador(ws) {
     spaceShip.id = jugadorID++;
     jugadors.push(spaceShip);
     ws.send(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
+    broadcast(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
 }
 
 
@@ -178,7 +180,7 @@ function crearJugador(ws) {
  * @param m: Missatge rebut
  */
 function canviarMides(ws, m) {
-    broadcast(JSON.stringify({msg: "connected", amplada: m.amplada, alcada: m.alcada}));
+    broadcast(JSON.stringify({ msg: "connected", amplada: m.amplada, alcada: m.alcada }));
 }
 
 
