@@ -199,5 +199,5 @@ function moureNau(ws, m) {
         }
         console.log(nau);
     }
-    broadcast(JSON.stringify({ msg: "moveSpaceShip", nau: spaceShip }));
+    broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors }));
 }
