@@ -1,6 +1,7 @@
 /*************************
  * 		DADES GLOBALS
  *************************/
+
 //Mesures canvas
 var amplada = Game.canvas.clientWidth;
 var altura = Game.canvas.clientHeight;
@@ -23,7 +24,7 @@ var id;
  */
 function createNau (nau) {
     spaceShip = nau; // Asignem la nostra variable global Spaceship i fiquen dintre l'objecte nau
-    id = spaceShip.id; // Afegim l'id del nostre jugador actualss
+    id = spaceShip.id; // Afegim l'id del nostre jugador actuals
     nauX = Game.canvas.clientWidth / 2 - 32;
     nauY = Game.canvas.clientHeight - 64;
     spaceShip.img = new Image();
@@ -45,6 +46,7 @@ function centerNau () {
 
 function moureNau() {
 	if (connexio) { 
+        console.log(id)
         connexio.send(JSON.stringify( { action: "move", nau: spaceShip })); 
     }
 }
@@ -76,10 +78,10 @@ window.addEventListener("keyup", function (e) {
     spaceShip.img.src = "../images/nau64px.png";
     // Moure nau amunt
     if ("ArrowUp" in Game.keysPress || "w" in Game.keysPress) 
-    spaceShip.y > -64 ? spaceShip.y -= spaceShip.speed : spaceShip.y = Game.canvas.height;
+        spaceShip.y > -64 ? spaceShip.y -= spaceShip.speed : spaceShip.y = Game.canvas.height;
     // Moure nwau abaix
     if ("ArrowDown" in Game.keysPress || "s" in Game.keysPress) 
-        spaceShip.y < Game.canvas.width ? spaceShip.y += spaceShip.speed : spaceShip.y = -64;
+        spaceShip.y < Game.canvas.height ? spaceShip.y += spaceShip.speed : spaceShip.y = -64;
     // Moure nau ezquerra
     if ("ArrowLeft" in Game.keysPress || "a" in Game.keysPress) 
         spaceShip.x > -64 ? spaceShip.x -= spaceShip.speed : spaceShip.x = Game.canvas.width;
@@ -91,9 +93,7 @@ window.addEventListener("keyup", function (e) {
     Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
     Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y); // Dibuixen la nostra nau en una nova posició
     requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
-    //spaceShip.img.onload = () => {Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y)};
 }
-
 
 /* Funció per obrir i tencar una sessió*/
 function openConnection() { 
@@ -103,53 +103,50 @@ function openConnection() {
 	}
 	connexio.onclose = function() { // Si la sessió s'ha tancat
 		alert("Se ha tancat la connexió");
-		window.location = "gamer.html";
+		window.location = "../index.html";
 	}
 	connexio.onerrors = function() { // Si la connexió té un error..
 		alert("Se ha interromput la connexió!");
-		window.location = "gamer.html";
+		window.location = "../index.html";
 	}
 }
 // Missatge rebut pel servidor
 function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola */
 	connexio.onmessage = function(message) {
-		let missatge = JSON.parse(message.data), nau;
-        nau = missatge.nau;
+		let missatge = JSON.parse(message.data);
         switch (missatge.msg) {
             case "connected":
-                console.log(missatge)
+                let nau = missatge.nau;
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;      
                 createNau(nau); // Crear la nau
                 centerNau(); // Centrar la nau
-                // Bucle
                 break;
             case "modifyGameClient":
-                //Game.canvas.width = missatge.amplada;
-                //Game.canvas.height = missatge.alcada;
-                centerNau();
+                Game.canvas.width = missatge.amplada;
+                Game.canvas.height = missatge.alcada;
+                centerNau(); // bucle
                 break;
             case "moveSpaceShip":
-                spaceShip = nau;
+                spaceShip = missatge.nau;
                 spaceShip.img = new Image();
                 spaceShip.img.src = "../images/nau64px.png";
-                console.log(nau);
-                if(moure) {
+                spaceShip.id = id;
+                if(!Game.move) { // Aquest bool es per evitar cridar la funció requestAnimationFrame varies vegades
                     updateCanvas();
-                    moure = false;
+                    Game.move = true;
                 }
                 break;
         }
 	}
 }
-let moure = true;
+
 function init() {
     var domini;
     if (window.location.protocol == "file:") domini = "localhost";
     else domini = window.location.hostname;
     var url = "ws://" + domini + ":8180";
     connexio = new WebSocket(url);
-
     // Obrir la conexió
     openConnection();
     // Message from server

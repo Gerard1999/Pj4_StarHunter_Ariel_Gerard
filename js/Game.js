@@ -8,6 +8,7 @@ var Game = (function() {
         ctx: ctx,
         keysPress: {},
         over: false,
+        move: false,
         render: requestAnimationFrame
     }
 }())

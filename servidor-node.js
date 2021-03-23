@@ -121,7 +121,7 @@ function processar(ws, missatge) {
             break;
         case "addPlayer":
             console.log("Creating Player...");
-            crearJugador();
+            crearJugador(ws);
             break;
         case "changeSize":
             console.log("Changing Sizes...");
@@ -131,7 +131,6 @@ function processar(ws, missatge) {
             break;
         case "move":
             console.log("Moving...");
-            console.log(message.nau)
             moureNau(ws, message)
             break;
             /*case "undo":
@@ -163,11 +162,11 @@ function crearAdmin(ws) {
  * 
  * @paravar spaceShipm ws: Connexió socket del client
  */
-function crearJugador() {
+function crearJugador(ws) {
     let spaceShip = new Nau();
     spaceShip.id = jugadorID++;
     jugadors.push(spaceShip);
-    broadcast(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
+    ws.send(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
 }
 
 
@@ -192,7 +191,12 @@ function canviarMides(ws, m) {
  */
 function moureNau(ws, m) {
     let spaceShip = m.nau;
-    ws.send(JSON.stringify({ msg: "moveSpaceShip", nau: spaceShip }));
-    //broadcast(JSON.stringify({ msg: "moveSpaceShip", coordenades: coordenadesNaus }), idJugador);
-
+    for(let nau of jugadors) {
+        if(spaceShip.id == nau.id) {
+            nau.x = spaceShip.x;
+            nau.y = spaceShip.y;
+        }
+        console.log(nau);
+    }
+    broadcast(JSON.stringify({ msg: "moveSpaceShip", nau: spaceShip }));
 }
