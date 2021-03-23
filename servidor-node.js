@@ -168,7 +168,6 @@ function crearJugador(ws) {
     spaceShip.id = jugadorID++;
     jugadors.push(spaceShip);
     ws.send(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
-    broadcast(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
 }
 
 
