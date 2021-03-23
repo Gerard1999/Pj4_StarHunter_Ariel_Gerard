@@ -189,8 +189,8 @@ function generarEstrelles(m) {
 
     for (let i = 0; i < m.stars; i++) {
         var estrella = new Star();
-        estrella.x = Math.random() * m.amplada;
-        estrella.y = Math.random() * m.alcada;
+        estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
+        estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
         estrella.id = i;
         estrelles.push(estrella);
     }
