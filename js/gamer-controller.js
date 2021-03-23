@@ -108,8 +108,11 @@ function updateCanvas() {
  */
 function printarEstrelles(coordenadesEstrelles) {
     for (let i = 0; i < coordenadesEstrelles.length; i++) {
-
-
+        var estrella = coordenadesEstrelles[i];
+        console.log(estrella.id);
+        estrella.img = new Image();
+        estrella.img.src = "../images/estrella.png";
+        estrella.img.onload = Game.ctx.drawImage(estrella.img, estrella.x, estrella.y);
     }
 }
 

@@ -98,7 +98,6 @@ function broadcast(missatge, clientExclos) {
  ***************************/
 var jugadors = [];
 var coordenadesNaus = [];
-var estrelles = [];
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -181,7 +180,7 @@ function canviarMides(ws, m) {
 
 /**
  * Funció que reb el nombre d'estrelles rebudes
- * i les crea en posicions aleatòries del canvas
+ * i envia cada estrella al client dins d'un objecte
  * @param message: Missatge rebut (conté nombre d'estrelles, nombre de l'alçada
  * i l'amplada del canvas)
  */
@@ -189,16 +188,12 @@ function generarEstrelles(m) {
     var estrelles = [];
 
     for (let i = 0; i < m.stars; i++) {
-        var x = Math.random() * m.amplada;
-        var y = Math.random() * m.alcada;
-        var estrella = {
-            id: i,
-            x: x,
-            y: y
-        }
+        var estrella = new Star();
+        estrella.x = Math.random() * m.amplada;
+        estrella.y = Math.random() * m.alcada;
+        estrella.id = i;
         estrelles.push(estrella);
     }
-
     broadcast(JSON.stringify({ msg: "paintingStars", coordenades: estrelles }));
 }
 
