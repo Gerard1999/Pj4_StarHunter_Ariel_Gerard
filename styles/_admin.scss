@@ -9,18 +9,15 @@
     align-items: center;
     justify-content: center;
     box-shadow: 0 20px 20px rgba(0, 0, 0, 1);
-
-    .boto{
+    .boto {
         padding: 0.3rem 0.6rem;
         font-size: 2vh;
     }
-
     #configuracio {
-        padding: 2rem;
+        padding: 1.6rem;
         display: flex;
         justify-content: center;
         align-content: center;
-        margin: 1.5rem;
         font-size: 1.2rem;
         input {
             border-radius: 25px;
@@ -28,8 +25,16 @@
             background-color: rgba(180, 220, 246, 0.383);
             border: none;
             text-align: center;
-            margin: 0rem 0.5rem;
             font-size: 1rem;
+        }
+    }
+    .butons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img {
+            margin: 2rem;
+            cursor: pointer;
         }
     }
     canvas {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -9,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
     <title>Administrador</title>
 </head>
+
 <body onload="init()">
     <div class="admin">
         <h1>Administrar el Joc</h1>
@@ -19,11 +21,24 @@
                 <input id="amplada" type="number" step="3" min="0" value="">
             </div>
             <div class="configuracio-child">
-                <label for="amplada">Alçada: </label>
+                <label for="alcada">Alçada: </label>
                 <input id="alcada" type="number" step="3" min="0" value="">
+            </div>
+            <div class="configuracio-child">
+                <label for="estrelles">Estrelles: </label>
+                <input id="estrelles" type="number" step="2" min="0" value="4">
+            </div>
+        </div>
+        <div class="butons">
+            <div class="play">
+                <img src="../images/play.png" alt="">
+            </div>
+            <div class="pause">
+                <img src="../images/pausa.png" alt="">
             </div>
         </div>
         <canvas id="canvas" width="600" height="450" style="border:1px solid #000000;"></canvas>
     </div>
 </body>
+
 </html>
