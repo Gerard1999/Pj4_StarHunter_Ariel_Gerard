@@ -13,9 +13,7 @@ var imatges = [
     { id: 9, x: 268, y: 386, cosnau: 64, img: '', speed: 3, star: 0 },
     { id: 10, x: 0, y: 0, cosnau: 64, img: '', speed: 3, star: 0 },
     { id: 11, x: 1, y: 200, cosnau: 64, img: '', speed: 3, star: 0 },
-    { id: 12, x: 28, y: 300, cosnau: 64, img: '', speed: 3, star: 0 },
-    { id: 13, x: 0, y: 0, cosnau: 64, img: '', speed: 3, star: 0 },
-    { id: 14, x: 1, y: 86, cosnau: 64, img: '', speed: 3, star: 0 }
+
 ]
 
 //ID JUGADOR:
@@ -28,18 +26,18 @@ var id;
  * Format: {id: idJugador, X: posicioX, Y: posicioY}
  */
 function createNau(nau) {
-    spaceShip = nau; // Asignem la nostra variable global Spaceship i fiquen dintre l'objecte nau
-    id = spaceShip.id; // Afegim l'id del nostre jugador actuals
-    spaceShip.x = Game.canvas.clientWidth / 2 - 32;
-    spaceShip.y = Game.canvas.clientHeight - 64;
-    spaceShip.img = new Image();
-    spaceShip.img.src = "../images/nau64px.png";
+    id = nau.id; // Afegim l'id del nostre jugador actuals
+    nau.x = Game.canvas.clientWidth / 2 - 32;
+    nau.y = Game.canvas.clientHeight - 64;
+    nau.img = new Image();
+    nau.img.src = "../images/nau64px.png";
+    spaceShip = nau;
 }
 
-function centerNau() {
+function centerNau(nau) {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
-    Game.ctx.fillRect(0, 0, Game.canvas.clientWidth, Game.canvas.clientHeight);
-    spaceShip.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
+    nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
+    //Game.ctx.fillRect(0, 0, Game.canvas.clientWidth, Game.canvas.clientHeight);
 }
 
 /**
@@ -77,7 +75,7 @@ window.addEventListener("keyup", function(e) {
  * servidor amb les coordenades actuals.
  */
 function updateCanvas() {
-    for (let spaceShi of imatges) {
+    for (let spaceShi of listSpaceShip) {
         spaceShi.img = new Image();
         spaceShi.img.src = "../images/nau64px.png";
         // Moure nau amunt
@@ -94,8 +92,8 @@ function updateCanvas() {
         spaceShip.x < Game.canvas.width ? spaceShip.x += spaceShip.speed : spaceShip.x = -64;*/
 
         Game.ctx.fillStyle = '#b6ddf6' // Background del Canvas
-        Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
-        Game.ctx.drawImage(spaceShip.img, spaceShi.x, spaceShi.y); // Dibuixen la nostra nau en una nova posició
+        //Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
+        //Game.ctx.drawImage(spaceShip.img, spaceShi.x, spaceShi.y); // Dibuixen la nostra nau en una nova posició
         spaceShip.img.onload = Game.ctx.drawImage(spaceShip.img, spaceShi.x, spaceShi.y);
         //requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
     }
@@ -136,7 +134,7 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
                 createNau(missatge.nau); // Crear la nau
-                centerNau(); // Centrar la nau
+                centerNau(missatge.nau); // Centrar la nau
                 break;
             case "modifyGameClient":
                 Game.canvas.width = missatge.amplada;
