@@ -98,6 +98,7 @@ function broadcast(missatge, clientExclos) {
  ***************************/
 var jugadors = [];
 var coordenadesNaus = [];
+estrelles = [];
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -130,18 +131,14 @@ function processar(ws, missatge) {
             alcada = message.alcada;
             canviarMides(ws, message);
             break;
+        case "changeStars":
+            console.log("Changing Stars value...");
+            generarEstrelles(message);
+            break;
         case "move":
             console.log("Moving...");
             moureNau(ws, message)
             break;
-            /*case "undo":
-            	console.log("Desfent última línia...");
-            	break;
-            case "delete":
-            	console.log("Esborrant línies...");
-            	break;
-            default:*/
-
     }
 }
 
@@ -167,7 +164,7 @@ function crearJugador(ws) {
     let spaceShip = new Nau();
     spaceShip.id = jugadorID++;
     jugadors.push(spaceShip);
-    ws.send(JSON.stringify({msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip}));
+    ws.send(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
 }
 
 
@@ -182,6 +179,29 @@ function canviarMides(ws, m) {
     broadcast(JSON.stringify({ msg: "connected", amplada: m.amplada, alcada: m.alcada }));
 }
 
+/**
+ * Funció que reb el nombre d'estrelles rebudes
+ * i les crea en posicions aleatòries del canvas
+ * @param message: Missatge rebut (conté nombre d'estrelles, nombre de l'alçada
+ * i l'amplada del canvas)
+ */
+function generarEstrelles(m) {
+    var estrelles = [];
+
+    for (let i = 0; i < m.stars; i++) {
+        var x = Math.random() * m.amplada;
+        var y = Math.random() * m.alcada;
+        var estrella = {
+            id: i,
+            x: x,
+            y: y
+        }
+        estrelles.push(estrella);
+    }
+
+    broadcast(JSON.stringify({ msg: "paintingStars", coordenades: estrelles }));
+}
+
 
 /**
  * Aquesta funció actualitza les noves coordenades de la nau moguda
@@ -192,8 +212,8 @@ function canviarMides(ws, m) {
  */
 function moureNau(ws, m) {
     let spaceShip = m.nau;
-    for(let nau of jugadors) {
-        if(spaceShip.id == nau.id) {
+    for (let nau of jugadors) {
+        if (spaceShip.id == nau.id) {
             nau.x = spaceShip.x;
             nau.y = spaceShip.y;
         }
