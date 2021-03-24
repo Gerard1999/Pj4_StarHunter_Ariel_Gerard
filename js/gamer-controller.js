@@ -26,17 +26,18 @@ var puntuacio = document.getElementById("estrelles");
  * Format: {id: idJugador, X: posicioX, Y: posicioY}
  */
 function createNau(nau) {
-    if(!existNau){
+    if (!existNau) {
         nau.x = Game.canvas.clientWidth / 2 - 32;
         nau.y = Game.canvas.clientHeight - 64;
         nau.img = new Image();
         nau.img.src = "../images/nau64px.png";
         spaceShip = nau;
-        puntuacio.innerText = nau.star;
+        puntuacio.innerText = 0;
         centerNau(nau); // Centrar la nau
         existNau = true;
     }
 }
+
 function centerNau(nau) {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
     nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
@@ -77,12 +78,17 @@ window.addEventListener("keyup", function(e) {
  */
 function updateCanvas(nau) {
     nau.img = new Image();
-    nau.img.src = "../images/nau64px.png";
-    Game.ctx.drawImage(nau.img, nau.x, nau.y);
-    if(existStart) 
-    for (let i = 0; i < coordenadesEstrelles.length; i++) { 
-        checkStarCollect(nau, coordenadesEstrelles[i])
+    if (nau.id == spaceShip.id) {
+        spaceShip = nau;
+        nau.img.src = "../images/nau64px.png";
+    } else {
+        nau.img.src = "../images/nau64pxEnemic.png";
     }
+    Game.ctx.drawImage(nau.img, nau.x, nau.y);
+    if (existStart)
+        for (let i = 0; i < coordenadesEstrelles.length; i++) {
+            checkStarCollect(nau, coordenadesEstrelles[i])
+        }
 }
 
 /**
@@ -101,17 +107,18 @@ function printarEstrelles(coordenadesEstrelles) {
 // Comprobar si la estrella ha sigut atrapada
 function checkStarCollect(spaceShip, estrella) {
     if (
-        spaceShip.x <= (estrella.x + 32)
-        && estrella.x <= (spaceShip.x + 64)
-        && spaceShip.y <= (estrella.y + 32)
-        && estrella.y <= (spaceShip.y + 64)
+        spaceShip.x <= (estrella.x + 32) &&
+        estrella.x <= (spaceShip.x + 64) &&
+        spaceShip.y <= (estrella.y + 32) &&
+        estrella.y <= (spaceShip.y + 64)
     ) {
-        for (let i = 0; i < coordenadesEstrelles.length; i++) { 
-           if(estrella.id == coordenadesEstrelles[i].id) {
-               coordenadesEstrelles.splice(i, 1);
+        for (let i = 0; i < coordenadesEstrelles.length; i++) {
+            if (estrella.id == coordenadesEstrelles[i].id) {
+                coordenadesEstrelles.splice(i, 1);
             }
         }
         spaceShip.star++;
+        puntuacio.innerText = spaceShip.star;
     }
 }
 
@@ -151,11 +158,8 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 break;
             case "moveSpaceShip":
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if(existStart) printarEstrelles(coordenadesEstrelles);
-                for(let nau of missatge.naus) {
-                    if(nau.id == spaceShip.id) {
-                        spaceShip = nau;
-                    }
+                if (existStart) printarEstrelles(coordenadesEstrelles);
+                for (let nau of missatge.naus) {
                     updateCanvas(nau);
                 }
                 break;
