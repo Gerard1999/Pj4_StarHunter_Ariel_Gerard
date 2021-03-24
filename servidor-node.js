@@ -4,6 +4,7 @@ var Star = require('./js/Star.js'); // Importem la clase Star
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
+var Game = './js/Game.js';
 
 // Tipus de extensions permesses
 const FILE_TYPES = {
@@ -98,6 +99,8 @@ function broadcast(missatge, clientExclos) {
  ***************************/
 var jugadors = [];
 var coordenadesNaus = [];
+var keysPress = {};
+
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -205,14 +208,37 @@ function generarEstrelles(m) {
  * @param ws: Connexió socket del client
  * @param m: Missatge rebut
  */
-function moureNau(ws, m) {
-    let spaceShip = m.nau;
+
+function moureNau(ws, m) {   
+    console.log(m.key)
+    let spaceShip = updateSpaceShipXY(m.nau, m.key);
     for (let nau of jugadors) {
-        if (spaceShip.id == nau.id) {
+        if(nau.id == spaceShip.id) {
+            nau.id = spaceShip.id;
             nau.x = spaceShip.x;
             nau.y = spaceShip.y;
+            nau.cosnau = spaceShip.cosnau;
+            nau.speed = spaceShip.speed;
+            nau.star = spaceShip.star;
         }
-        console.log(nau);
     }
+    console.log(jugadors);
     broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors }));
+}
+
+// Update positions
+function updateSpaceShipXY (nau, keysPress) {
+    //console.log(keysPress);
+    if ("ArrowUp" in keysPress || "w" in keysPress) 
+    nau.y > -64 ? nau.y -= nau.speed : nau.y = alcada;
+    // Moure nau abaix
+    if ("ArrowDown" in keysPress || "s" in keysPress) 
+    nau.y < alcada ? nau.y += nau.speed : nau.y = -64;
+    // Moure nau ezquerra
+    if ("ArrowLeft" in keysPress || "a" in keysPress) 
+    nau.x > -64 ? nau.x -= nau.speed : nau.x = amplada;
+    // Moure nau dreta
+    if ("ArrowRight" in keysPress || "d" in keysPress) 
+    nau.x < amplada ? nau.x += nau.speed : nau.x = -64;
+    return nau;
 }

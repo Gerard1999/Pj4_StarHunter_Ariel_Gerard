@@ -8,7 +8,6 @@ var altura = Game.canvas.clientHeight;
 
 // SpaceShip
 var spaceShip;
-var listSpaceShip = [];
 var imatges = [
     { id: 9, x: 268, y: 386, cosnau: 64, img: '', speed: 3, star: 0 },
     { id: 10, x: 0, y: 0, cosnau: 64, img: '', speed: 3, star: 0 },
@@ -32,8 +31,8 @@ function createNau(nau) {
     nau.img = new Image();
     nau.img.src = "../images/nau64px.png";
     spaceShip = nau;
+    console.log(nau)
 }
-
 function centerNau(nau) {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
     nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
@@ -45,10 +44,9 @@ function centerNau(nau) {
  * al centre inferior de la pantalla
  */
 
-function moureNau() {
+function moureNau(keyPress) {
     if (connexio) {
-        console.log(id)
-        connexio.send(JSON.stringify({ action: "move", nau: spaceShip }));
+        connexio.send(JSON.stringify({ action: "move", nau: spaceShip, key: keyPress }));
     }
 }
 
@@ -58,7 +56,7 @@ function moureNau() {
 
 window.addEventListener("keydown", function(e) {
     Game.keysPress[e.key] = true; // El true només és per indicar el valor del key del objecte
-    moureNau();
+    moureNau(Game.keysPress);
     e.preventDefault();
 
 }, false);
@@ -74,29 +72,16 @@ window.addEventListener("keyup", function(e) {
  * Funció per moure la nau amb les tecles i s'envia un missatge al
  * servidor amb les coordenades actuals.
  */
-function updateCanvas() {
-    for (let spaceShi of listSpaceShip) {
-        spaceShi.img = new Image();
-        spaceShi.img.src = "../images/nau64px.png";
-        // Moure nau amunt
-        /*if ("ArrowUp" in Game.keysPress || "w" in Game.keysPress) 
-        spaceShip.y > -64 ? spaceShip.y -= spaceShip.speed : spaceShip.y = Game.canvas.height;
-        // Moure nwau abaix
-        if ("ArrowDown" in Game.keysPress || "s" in Game.keysPress) 
-        spaceShip.y < Game.canvas.height ? spaceShip.y += spaceShip.speed : spaceShip.y = -64;
-        // Moure nau ezquerra
-        if ("ArrowLeft" in Game.keysPress || "a" in Game.keysPress) 
-        spaceShip.x > -64 ? spaceShip.x -= spaceShip.speed : spaceShip.x = Game.canvas.width;
-        // Moure nau dreta
-        if ("ArrowRight" in Game.keysPress || "d" in Game.keysPress) 
-        spaceShip.x < Game.canvas.width ? spaceShip.x += spaceShip.speed : spaceShip.x = -64;*/
-
-        Game.ctx.fillStyle = '#b6ddf6' // Background del Canvas
-        //Game.ctx.fillRect(0, 0, Game.canvas.width, Game.canvas.height); // Els primers valors es per on comenza el canvas (X, Y) i els dos següents per l' amplada i açada
-        //Game.ctx.drawImage(spaceShip.img, spaceShi.x, spaceShi.y); // Dibuixen la nostra nau en una nova posició
-        spaceShip.img.onload = Game.ctx.drawImage(spaceShip.img, spaceShi.x, spaceShi.y);
-        //requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
-    }
+ var angle = -Math.PI / 2,
+ thrusting = false,
+ braking = false,
+ turnLeft = false,
+ turnRight = false;
+function updateCanvas(nau) {
+    nau.img = new Image();
+    nau.img.src = "../images/nau64px.png";
+    Game.ctx.drawImage(nau.img, nau.x, nau.y);
+    //requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
 }
 
 /**
@@ -149,17 +134,16 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 printarEstrelles(coordenadesEstrelles);
                 break;
             case "moveSpaceShip":
-                listSpaceShip = missatge.naus;
-                console.log(listSpaceShip)
                     //spaceShip.img = new Image();
                     //spaceShip.img.src = "../images/nau64px.png";
                     //spaceShip.id = id;
-                updateCanvas();
-
-                /*if(!Game.move) { // Aquest bool es per evitar cridar la funció requestAnimationFrame varies vegades
-                    updateCanvas();
-                    Game.move = true;
-                }*/
+                Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for(let nau of missatge.naus) {
+                    if(nau.id == spaceShip.id) {
+                        spaceShip = nau;
+                    }
+                    updateCanvas(nau);
+                }
                 break;
         }
     }

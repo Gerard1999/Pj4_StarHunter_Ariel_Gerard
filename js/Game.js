@@ -6,8 +6,8 @@ var Game = (function() {
         canvas: canvas,
         starsCollected: 0,
         ctx: ctx,
-        keysPress: {},
         over: false,
+        keysPress: {},
         move: false,
         render: requestAnimationFrame
     }
