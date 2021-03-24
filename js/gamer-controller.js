@@ -8,17 +8,14 @@ var altura = Game.canvas.clientHeight;
 
 // SpaceShip
 var spaceShip;
-var imatges = [
-    { id: 9, x: 268, y: 386, cosnau: 64, img: '', speed: 3, star: 0 },
-    { id: 10, x: 0, y: 0, cosnau: 64, img: '', speed: 3, star: 0 },
-    { id: 11, x: 1, y: 200, cosnau: 64, img: '', speed: 3, star: 0 },
-
-]
-
 //ID JUGADOR:
 var id;
+var estrella;
 
-var coordenadesEstrelles;
+var existStart = false;
+var existNau = false;
+
+var coordenadesEstrelles = [];
 //Puntuació del Jugador
 var puntuacio = document.getElementById("estrelles");
 
@@ -29,19 +26,20 @@ var puntuacio = document.getElementById("estrelles");
  * Format: {id: idJugador, X: posicioX, Y: posicioY}
  */
 function createNau(nau) {
-    id = nau.id; // Afegim l'id del nostre jugador actuals
-    nau.x = Game.canvas.clientWidth / 2 - 32;
-    nau.y = Game.canvas.clientHeight - 64;
-    nau.img = new Image();
-    nau.img.src = "../images/nau64px.png";
-    spaceShip = nau;
-    console.log(nau);
-    puntuacio.innerText = nau.star;
+    if(!existNau){
+        nau.x = Game.canvas.clientWidth / 2 - 32;
+        nau.y = Game.canvas.clientHeight - 64;
+        nau.img = new Image();
+        nau.img.src = "../images/nau64px.png";
+        spaceShip = nau;
+        puntuacio.innerText = nau.star;
+        centerNau(nau); // Centrar la nau
+        existNau = true;
+    }
 }
 function centerNau(nau) {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
     nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
-    //Game.ctx.fillRect(0, 0, Game.canvas.clientWidth, Game.canvas.clientHeight);
 }
 
 /**
@@ -81,7 +79,10 @@ function updateCanvas(nau) {
     nau.img = new Image();
     nau.img.src = "../images/nau64px.png";
     Game.ctx.drawImage(nau.img, nau.x, nau.y);
-    //requestAnimationFrame(updateCanvas) // Actualitzen el canvas amb les noves posicions
+    if(existStart) 
+    for (let i = 0; i < coordenadesEstrelles.length; i++) { 
+        checkStarCollect(nau, coordenadesEstrelles[i])
+    }
 }
 
 /**
@@ -91,12 +92,29 @@ function updateCanvas(nau) {
  */
 function printarEstrelles(coordenadesEstrelles) {
     for (let i = 0; i < coordenadesEstrelles.length; i++) {
-        var estrella = coordenadesEstrelles[i];
+        estrella = coordenadesEstrelles[i];
         estrella.img = new Image();
         estrella.img.src = "../images/estrella.png";
         estrella.img.onload = Game.ctx.drawImage(estrella.img, estrella.x, estrella.y);
     }
 }
+// Comprobar si la estrella ha sigut atrapada
+function checkStarCollect(spaceShip, estrella) {
+    if (
+        spaceShip.x <= (estrella.x + 32)
+        && estrella.x <= (spaceShip.x + 64)
+        && spaceShip.y <= (estrella.y + 32)
+        && estrella.y <= (spaceShip.y + 64)
+    ) {
+        for (let i = 0; i < coordenadesEstrelles.length; i++) { 
+           if(estrella.id == coordenadesEstrelles[i].id) {
+               coordenadesEstrelles.splice(i, 1);
+            }
+        }
+        spaceShip.star++;
+    }
+}
+
 
 /* Funció per obrir i tencar una sessió*/
 function openConnection() {
@@ -121,20 +139,19 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
                 createNau(missatge.nau); // Crear la nau
-                centerNau(missatge.nau); // Centrar la nau
                 break;
             case "modifyGameClient":
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
-                //centerNau(); // bucle
                 break;
             case "paintingStars":
                 coordenadesEstrelles = missatge.coordenades;
                 printarEstrelles(coordenadesEstrelles);
+                existStart = true;
                 break;
             case "moveSpaceShip":
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
-                printarEstrelles(coordenadesEstrelles);
+                if(existStart) printarEstrelles(coordenadesEstrelles);
                 for(let nau of missatge.naus) {
                     if(nau.id == spaceShip.id) {
                         spaceShip = nau;

@@ -9,6 +9,7 @@ var Game = (function() {
         over: false,
         keysPress: {},
         move: false,
+        existStar: false,
         render: requestAnimationFrame
     }
 }())

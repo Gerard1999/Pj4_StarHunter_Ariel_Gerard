@@ -44,11 +44,11 @@ function openConnection() {
     }
     connexio.onclose = function() { // Si la sessió s'ha tancat
         alert("Se ha tancat la connexió");
-        window.location = "gamer.html";
+        window.location = "../index.html";
     }
     connexio.onerrors = function() { // Si la connexió té un error..
         alert("Se ha interromput la connexió!");
-        window.location = "gamer.html";
+        window.location = "../index.html";
     }
 }
 
