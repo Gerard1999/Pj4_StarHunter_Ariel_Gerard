@@ -105,20 +105,22 @@ function printarEstrelles(coordenadesEstrelles) {
     }
 }
 // Comprobar si la estrella ha sigut atrapada
-function checkStarCollect(spaceShip, estrella) {
+function checkStarCollect(ship, estrella) {
     if (
-        spaceShip.x <= (estrella.x + 32) &&
-        estrella.x <= (spaceShip.x + 64) &&
-        spaceShip.y <= (estrella.y + 32) &&
-        estrella.y <= (spaceShip.y + 64)
+        ship.x <= (estrella.x + 32) &&
+        estrella.x <= (ship.x + 64) &&
+        ship.y <= (estrella.y + 32) &&
+        estrella.y <= (ship.y + 64)
     ) {
         for (let i = 0; i < coordenadesEstrelles.length; i++) {
             if (estrella.id == coordenadesEstrelles[i].id) {
                 coordenadesEstrelles.splice(i, 1);
+                if(ship.id == spaceShip.id) {
+                    spaceShip.star++;
+                    puntuacio.innerText = spaceShip.star;
+                }
             }
         }
-        spaceShip.star++;
-        puntuacio.innerText = spaceShip.star;
     }
 }
 
