@@ -1,6 +1,6 @@
-/*************************
+/*********
  * 		DADES GLOBALS
- *************************/
+ *********/
 
 //Mesures canvas
 var amplada = Game.canvas.clientWidth;
@@ -16,6 +16,7 @@ var existStart = false;
 var existNau = false;
 
 var coordenadesEstrelles = [];
+var naus = [];
 //Puntuació del Jugador
 var puntuacio = document.getElementById("estrelles");
 
@@ -87,7 +88,7 @@ function updateCanvas(nau) {
     Game.ctx.drawImage(nau.img, nau.x, nau.y);
     if (existStart)
         for (let i = 0; i < coordenadesEstrelles.length; i++) {
-            checkStarCollect(nau, coordenadesEstrelles[i])
+            checkStarCollect(nau, coordenadesEstrelles[i], naus)
         }
 }
 
@@ -105,20 +106,29 @@ function printarEstrelles(coordenadesEstrelles) {
     }
 }
 // Comprobar si la estrella ha sigut atrapada
-function checkStarCollect(spaceShip, estrella) {
+function checkStarCollect(ship, estrella, naus) {
     if (
-        spaceShip.x <= (estrella.x + 32) &&
-        estrella.x <= (spaceShip.x + 64) &&
-        spaceShip.y <= (estrella.y + 32) &&
-        estrella.y <= (spaceShip.y + 64)
+        ship.x <= (estrella.x + 32) &&
+        estrella.x <= (ship.x + 64) &&
+        ship.y <= (estrella.y + 32) &&
+        estrella.y <= (ship.y + 64)
     ) {
         for (let i = 0; i < coordenadesEstrelles.length; i++) {
             if (estrella.id == coordenadesEstrelles[i].id) {
                 coordenadesEstrelles.splice(i, 1);
+                if (ship.id == spaceShip.id) {
+                    spaceShip.star++;
+                    puntuacio.innerText = spaceShip.star;
+                }
             }
         }
-        spaceShip.star++;
-        puntuacio.innerText = spaceShip.star;
+        for (let i = 0; i < naus.length; i++) {
+            if (naus[i].star == estrelles.value) {
+                if (confirm("Joc Acabat!")) {
+                    return window.location = "../index.html";
+                }
+            }
+        }
     }
 }
 
@@ -159,6 +169,7 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
             case "moveSpaceShip":
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
                 if (existStart) printarEstrelles(coordenadesEstrelles);
+                naus = missatge.naus;
                 for (let nau of missatge.naus) {
                     updateCanvas(nau);
                 }

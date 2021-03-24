@@ -1,3 +1,5 @@
+var naus = [];
+
 /**
  * Funció per canviar les mesures del canvas.
  */
@@ -37,10 +39,36 @@ function setEstrelles(estrelles, alcada, amplada) {
     connexio.send(JSON.stringify({ action: "changeStars", stars: estrelles, alcada: alcada, amplada: amplada }))
 }
 
+/**
+ * Funció per moure la nau amb les tecles i s'envia un missatge al
+ * servidor amb les coordenades actuals.
+ */
+function updateCanvasAdmin(nau) {
+    nau.img = new Image();
+    nau.img.src = "../images/nau64pxEnemic.png";
+    Game.ctx.drawImage(nau.img, nau.x, nau.y);
+    if (existStart) {
+        checkStarCollect(naus);
+    }
+
+}
+
+// Comprobar si la estrella ha estat atrapada
+function checkStarCollect(naus) {
+    for (let i = 0; i < naus.length; i++) {
+        if (naus[i].star == estrelles.value) {
+            if (confirm("Joc Acabat!")) {
+                return window.location = '../index.html';
+            }
+        }
+    }
+}
+
 /* Funció per obrir i tencar una sessió*/
 function openConnection() {
     connexio.onopen = function() { // Obrir sessió
         connexio.send(JSON.stringify({ action: "createAdmin" }));
+        getCanvas();
     }
     connexio.onclose = function() { // Si la sessió s'ha tancat
         alert("Se ha tancat la connexió");
@@ -52,15 +80,41 @@ function openConnection() {
     }
 }
 
+
+function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola */
+    connexio.onmessage = function(message) {
+        let missatge = JSON.parse(message.data);
+        console.log(missatge);
+        switch (missatge.msg) {
+            case "paintingStars":
+                coordenadesEstrelles = missatge.coordenades;
+                printarEstrelles(coordenadesEstrelles);
+                existStart = true;
+                break;
+            case "moveSpaceShip":
+                Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
+                if (existStart) printarEstrelles(coordenadesEstrelles);
+                naus = missatge.naus;
+                for (let nau of missatge.naus) {
+                    console.table(nau);
+                    updateCanvasAdmin(nau);
+                }
+                break;
+        }
+    }
+}
+
 function init() {
-    getCanvas();
     var domini;
     if (window.location.protocol == "file:") domini = "localhost";
     else domini = window.location.hostname;
     var url = "ws://" + domini + ":8180";
     connexio = new WebSocket(url);
+    // Obrir la conexió
     openConnection();
+    // Message from server
+    receiveMessage();
 }
 
 
-window.onload = init;
+init();
