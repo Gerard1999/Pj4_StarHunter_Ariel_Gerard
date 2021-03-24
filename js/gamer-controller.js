@@ -22,7 +22,7 @@ var puntuacio = document.getElementById("estrelles");
 
 /**
  * Funció que ubica totes les naus creades i mogudes fins ara.
- * 
+ *
  * @param coordenades : objecte de coordenades de totes les naus creades
  * Format: {id: idJugador, X: posicioX, Y: posicioY}
  */
@@ -94,7 +94,7 @@ function updateCanvas(nau) {
 
 /**
  * Funció per printar les estrelles al canvas
- * @param coordenadesEstrelles : Objecte amb quantitat i les 
+ * @param coordenadesEstrelles : Objecte amb quantitat i les
  *                                 coordenades de cada nau
  */
 function printarEstrelles(coordenadesEstrelles) {
