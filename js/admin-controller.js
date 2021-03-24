@@ -7,17 +7,13 @@ function getCanvas() {
     let alcada = document.getElementById("alcada");
     let amplada = document.getElementById("amplada");
     let estrelles = document.getElementById("estrelles");
+    let play = document.querySelector(".play");
     // Default values witdh and height
     alcada.value = canvas.clientHeight;
     amplada.value = canvas.clientWidth;
 
-    alcada.addEventListener("input", () => {
+    play.addEventListener("click", () => {
         setCanvas(canvas, alcada.value, amplada.value)
-    })
-    amplada.addEventListener("input", () => {
-        setCanvas(canvas, alcada.value, amplada.value)
-    })
-    estrelles.addEventListener("input", () => {
         setEstrelles(estrelles.value, alcada.value, amplada.value)
     })
 }
