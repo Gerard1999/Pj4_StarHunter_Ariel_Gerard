@@ -98,9 +98,6 @@ function broadcast(missatge, clientExclos) {
  * 		DADES GENERALS
  ***************************/
 var jugadors = [];
-var coordenadesNaus = [];
-var keysPress = {};
-
 
 // Últim identificador assignat
 var jugadorID = 0;

@@ -18,6 +18,8 @@ var imatges = [
 //ID JUGADOR:
 var id;
 
+var coordenadesEstrelles;
+
 /**
  * Funció que ubica totes les naus creades i mogudes fins ara.
  * 
@@ -72,11 +74,6 @@ window.addEventListener("keyup", function(e) {
  * Funció per moure la nau amb les tecles i s'envia un missatge al
  * servidor amb les coordenades actuals.
  */
- var angle = -Math.PI / 2,
- thrusting = false,
- braking = false,
- turnLeft = false,
- turnRight = false;
 function updateCanvas(nau) {
     nau.img = new Image();
     nau.img.src = "../images/nau64px.png";
@@ -130,14 +127,12 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 //centerNau(); // bucle
                 break;
             case "paintingStars":
-                let coordenadesEstrelles = missatge.coordenades;
+                coordenadesEstrelles = missatge.coordenades;
                 printarEstrelles(coordenadesEstrelles);
                 break;
             case "moveSpaceShip":
-                    //spaceShip.img = new Image();
-                    //spaceShip.img.src = "../images/nau64px.png";
-                    //spaceShip.id = id;
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
+                printarEstrelles(coordenadesEstrelles);
                 for(let nau of missatge.naus) {
                     if(nau.id == spaceShip.id) {
                         spaceShip = nau;
