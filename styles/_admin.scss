@@ -1,4 +1,4 @@
-.admin {
+.quadreJoc {
     background-color: rgb(145, 174, 236);
     border-radius: 30px;
     padding: 4rem;
@@ -12,6 +12,9 @@
     .boto {
         padding: 0.3rem 0.6rem;
         font-size: 2vh;
+    }
+    .puntuacio {
+        display: flex;
     }
     #configuracio {
         padding: 1.6rem;
