@@ -19,6 +19,8 @@ var imatges = [
 var id;
 
 var coordenadesEstrelles;
+//Puntuació del Jugador
+var puntuacio = document.getElementById("estrelles");
 
 /**
  * Funció que ubica totes les naus creades i mogudes fins ara.
@@ -33,7 +35,8 @@ function createNau(nau) {
     nau.img = new Image();
     nau.img.src = "../images/nau64px.png";
     spaceShip = nau;
-    console.log(nau)
+    console.log(nau);
+    puntuacio.innerText = nau.star;
 }
 function centerNau(nau) {
     Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
@@ -89,7 +92,6 @@ function updateCanvas(nau) {
 function printarEstrelles(coordenadesEstrelles) {
     for (let i = 0; i < coordenadesEstrelles.length; i++) {
         var estrella = coordenadesEstrelles[i];
-        console.log(estrella.id);
         estrella.img = new Image();
         estrella.img.src = "../images/estrella.png";
         estrella.img.onload = Game.ctx.drawImage(estrella.img, estrella.x, estrella.y);
