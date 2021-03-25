@@ -78,7 +78,14 @@ wss.on('connection', (remitent, peticio) => {
     remitent.on('message', message => {
         processar(remitent, message);
     });
+    remitent.onclose = () => {
+        tancarSessio(remitent);
+    }
 });
+
+function tancarSessio(rem) {
+    console.log(rem);
+}
 
 /**
  * Funció per fer Broadcast
@@ -206,11 +213,11 @@ function generarEstrelles(m) {
  * @param m: Missatge rebut
  */
 
-function moureNau(ws, m) {   
+function moureNau(ws, m) {
     console.log(m.key)
     let spaceShip = updateSpaceShipXY(m.nau, m.key);
     for (let nau of jugadors) {
-        if(nau.id == spaceShip.id) {
+        if (nau.id == spaceShip.id) {
             nau.id = spaceShip.id;
             nau.x = spaceShip.x;
             nau.y = spaceShip.y;
@@ -224,18 +231,18 @@ function moureNau(ws, m) {
 }
 
 // Update positions
-function updateSpaceShipXY (nau, keysPress) {
+function updateSpaceShipXY(nau, keysPress) {
     //console.log(keysPress);
-    if ("ArrowUp" in keysPress || "w" in keysPress) 
-    nau.y > -64 ? nau.y -= nau.speed : nau.y = alcada;
+    if ("ArrowUp" in keysPress || "w" in keysPress)
+        nau.y > -64 ? nau.y -= nau.speed : nau.y = alcada;
     // Moure nau abaix
-    if ("ArrowDown" in keysPress || "s" in keysPress) 
-    nau.y < alcada ? nau.y += nau.speed : nau.y = -64;
+    if ("ArrowDown" in keysPress || "s" in keysPress)
+        nau.y < alcada ? nau.y += nau.speed : nau.y = -64;
     // Moure nau ezquerra
-    if ("ArrowLeft" in keysPress || "a" in keysPress) 
-    nau.x > -64 ? nau.x -= nau.speed : nau.x = amplada;
+    if ("ArrowLeft" in keysPress || "a" in keysPress)
+        nau.x > -64 ? nau.x -= nau.speed : nau.x = amplada;
     // Moure nau dreta
-    if ("ArrowRight" in keysPress || "d" in keysPress) 
-    nau.x < amplada ? nau.x += nau.speed : nau.x = -64;
+    if ("ArrowRight" in keysPress || "d" in keysPress)
+        nau.x < amplada ? nau.x += nau.speed : nau.x = -64;
     return nau;
 }
