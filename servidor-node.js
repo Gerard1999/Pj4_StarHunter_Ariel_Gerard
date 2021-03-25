@@ -4,7 +4,6 @@ var Star = require('./js/Star.js'); // Importem la clase Star
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
-var Game = './js/Game.js';
 
 // Tipus de extensions permesses
 const FILE_TYPES = {
@@ -105,12 +104,16 @@ function broadcast(missatge, clientExclos) {
  * 		DADES GENERALS
  ***************************/
 var jugadors = [];
+var estrelles;
+var numEstrella = 0;
 
 // Últim identificador assignat
 var jugadorID = 0;
 
 var amplada = 0
 var alcada = 0;
+
+var gameOver = false;
 
 
 /**
@@ -139,7 +142,15 @@ function processar(ws, missatge) {
             break;
         case "changeStars":
             console.log("Changing Stars value...");
-            generarEstrelles(message);
+            estrelles = [];
+            if (!gameOver) {
+                setInterval(function() {
+                    generarEstrelles(message, estrelles, numEstrella);
+                    numEstrella++;
+                }, 2000);
+            } else {
+                clearInterval(crearEstrelles);
+            }
             break;
         case "move":
             console.log("Moving...");
@@ -191,17 +202,17 @@ function canviarMides(ws, m) {
  * @param message: Missatge rebut (conté nombre d'estrelles, nombre de l'alçada
  * i l'amplada del canvas)
  */
-function generarEstrelles(m) {
-    var estrelles = [];
+function generarEstrelles(m, estrelles, numEstrella) {
 
-    for (let i = 0; i < m.stars; i++) {
-        var estrella = new Star();
-        estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
-        estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
-        estrella.id = i;
-        estrelles.push(estrella);
-    }
+    console.log("Linia 202: " + estrelles);
+    var estrella = new Star();
+    estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
+    estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
+    estrella.id = numEstrella;
+    estrelles.push(estrella);
+
     broadcast(JSON.stringify({ msg: "paintingStars", coordenades: estrelles }));
+    console.log(estrelles);
 }
 
 
