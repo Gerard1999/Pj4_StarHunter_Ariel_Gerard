@@ -118,7 +118,7 @@ var jugadorID = 0;
 var amplada = 0
 var alcada = 0;
 
-var gameOver = false;
+var gamePaused = false;
 
 
 /**
@@ -148,13 +148,17 @@ function processar(ws, missatge) {
         case "changeStars":
             console.log("Changing Stars value...");
             estrelles = [];
-            if (!gameOver) {
+            gamePaused = message.gamePaused;
+            console.log(gamePaused);
+            if (gamePaused) {
+                console.log("setInterval");
                 setInterval(function() {
                     generarEstrelles(message, estrelles, numEstrella);
                     numEstrella++;
                 }, 2000);
             } else {
-                clearInterval(crearEstrelles);
+                clearInterval(generarEstrelles);
+                console.log("hey");
             }
             break;
         case "move":
@@ -210,7 +214,6 @@ function canviarMides(ws, m) {
  * i l'amplada del canvas)
  */
 function generarEstrelles(m, estrelles, numEstrella) {
-
     var estrella = new Star();
     estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
     estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
