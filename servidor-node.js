@@ -75,15 +75,20 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
     remitent.on('message', message => {
+        console.log("Receive : " + message + " from " + peticio.id);
         processar(remitent, message);
     });
     remitent.onclose = () => {
-        tancarSessio(remitent);
+        tancarSessio(remitent)
     }
 });
 
-function tancarSessio(rem) {
-    console.log(rem);
+function tancarSessio(ws) {
+    jugadors.forEach(function(jugador, index, objecte) {
+        if (jugador.id == ws.id) {
+          objecte.splice(index, 1);
+        }
+    });
 }
 
 /**
@@ -184,9 +189,11 @@ function crearAdmin(ws) {
  */
 function crearJugador(ws) {
     let spaceShip = new Nau();
-    spaceShip.id = jugadorID++;
+    spaceShip.id = jugadorID;
+    ws.id = jugadorID;
     jugadors.push(spaceShip);
     ws.send(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
+    jugadorID++;
 }
 
 
