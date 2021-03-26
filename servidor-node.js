@@ -283,6 +283,9 @@ function checkStarCollect(spaceShip, star) {
         for(let ship of jugadors) {
             if (ship.id == spaceShip.id) {
                 spaceShip.star++;
+                /*if(spaceShip.star == estrellesAAconseguir){
+                    finishGame
+                }*/
             }
         }
     }
