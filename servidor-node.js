@@ -75,15 +75,20 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
     remitent.on('message', message => {
+        console.log("Receive : " + message + " from " + peticio.id);
         processar(remitent, message);
     });
     remitent.onclose = () => {
-        tancarSessio(remitent);
+        tancarSessio(remitent)
     }
 });
 
-function tancarSessio(rem) {
-    console.log(rem);
+function tancarSessio(ws) {
+    jugadors.forEach(function(jugador, index, objecte) {
+        if (jugador.id == ws.id) {
+          objecte.splice(index, 1);
+        }
+    });
 }
 
 /**
@@ -180,9 +185,11 @@ function crearAdmin(ws) {
  */
 function crearJugador(ws) {
     let spaceShip = new Nau();
-    spaceShip.id = jugadorID++;
+    spaceShip.id = jugadorID;
+    ws.id = jugadorID;
     jugadors.push(spaceShip);
     ws.send(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
+    jugadorID++;
 }
 
 
@@ -205,7 +212,6 @@ function canviarMides(ws, m) {
  */
 function generarEstrelles(m, estrelles, numEstrella) {
 
-    console.log("Linia 202: " + estrelles);
     var estrella = new Star();
     estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
     estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
@@ -213,7 +219,6 @@ function generarEstrelles(m, estrelles, numEstrella) {
     estrelles.push(estrella);
 
     broadcast(JSON.stringify({ msg: "paintingStars", coordenades: estrelles }));
-    console.log(estrelles);
 }
 
 
