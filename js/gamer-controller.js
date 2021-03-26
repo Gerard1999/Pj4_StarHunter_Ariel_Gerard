@@ -16,6 +16,7 @@ var existStart = false;
 var existNau = false;
 
 var coordenadesEstrelles = [];
+
 var naus = [];
 //Puntuació del Jugador
 var puntuacio = document.getElementById("estrelles");
@@ -51,7 +52,7 @@ function centerNau(nau) {
 
 function moureNau(keyPress) {
     if (connexio) {
-        connexio.send(JSON.stringify({ action: "move", nau: spaceShip, key: keyPress }));
+        connexio.send(JSON.stringify({ action: "move", nau: spaceShip, key: keyPress, stars: coordenadesEstrelles }));
     }
 }
 
@@ -77,19 +78,18 @@ window.addEventListener("keyup", function(e) {
  * Funció per moure la nau amb les tecles i s'envia un missatge al
  * servidor amb les coordenades actuals.
  */
+
 function updateCanvas(nau) {
     nau.img = new Image();
     if (nau.id == spaceShip.id) {
         spaceShip = nau;
+        console.log(nau)
+        puntuacio.innerText = nau.star;
         nau.img.src = "../images/nau64px.png";
     } else {
         nau.img.src = "../images/nau64pxEnemic.png";
     }
     Game.ctx.drawImage(nau.img, nau.x, nau.y);
-    if (existStart)
-        for (let i = 0; i < coordenadesEstrelles.length; i++) {
-            checkStarCollect(nau, coordenadesEstrelles[i], naus)
-        }
 }
 
 /**
@@ -105,33 +105,6 @@ function printarEstrelles(coordenadesEstrelles) {
         estrella.img.onload = Game.ctx.drawImage(estrella.img, estrella.x, estrella.y);
     }
 }
-// Comprobar si la estrella ha sigut atrapada
-function checkStarCollect(ship, estrella, naus) {
-    if (
-        ship.x <= (estrella.x + 32) &&
-        estrella.x <= (ship.x + 64) &&
-        ship.y <= (estrella.y + 32) &&
-        estrella.y <= (ship.y + 64)
-    ) {
-        for (let i = 0; i < coordenadesEstrelles.length; i++) {
-            if (estrella.id == coordenadesEstrelles[i].id) {
-                coordenadesEstrelles.splice(i, 1);
-                if (ship.id == spaceShip.id) {
-                    spaceShip.star++;
-                    puntuacio.innerText = spaceShip.star;
-                }
-            }
-        }
-        for (let i = 0; i < naus.length; i++) {
-            if (naus[i].star == estrelles.value) {
-                if (confirm("Joc Acabat!")) {
-                    return window.location = "../index.html";
-                }
-            }
-        }
-    }
-}
-
 
 /* Funció per obrir i tencar una sessió*/
 function openConnection() {
@@ -168,7 +141,10 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 break;
             case "moveSpaceShip":
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (existStart) printarEstrelles(coordenadesEstrelles);
+                if (existStart) {
+                    coordenadesEstrelles = missatge.stars;
+                    printarEstrelles(missatge.stars);
+                }
                 naus = missatge.naus;
                 for (let nau of missatge.naus) {
                     updateCanvas(nau);

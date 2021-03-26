@@ -93,7 +93,10 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 break;
             case "moveSpaceShip":
                 Game.ctx.clearRect(0, 0, canvas.width, canvas.height);
-                if (existStart) printarEstrelles(coordenadesEstrelles);
+                if (existStart) {
+                    coordenadesEstrelles = missatge.stars;
+                    printarEstrelles(missatge.stars);
+                }
                 naus = missatge.naus;
                 for (let nau of missatge.naus) {
                     console.table(nau);

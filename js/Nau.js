@@ -5,7 +5,7 @@ module.exports = class Nau {
         this.y = 0;
         this.cosnau = 64; // Pixels de la nau 64 x 64
         this.img = "";
-        this.speed = 3;
+        this.speed = 5;
         this.star = 0;
     }
 }

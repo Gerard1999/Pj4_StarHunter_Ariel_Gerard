@@ -4,7 +4,6 @@ var Star = require('./js/Star.js'); // Importem la clase Star
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
-var Game = './js/Game.js';
 
 // Tipus de extensions permesses
 const FILE_TYPES = {
@@ -105,6 +104,7 @@ function broadcast(missatge, clientExclos) {
  * 		DADES GENERALS
  ***************************/
 var jugadors = [];
+var estrelles = [];
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -192,8 +192,7 @@ function canviarMides(ws, m) {
  * i l'amplada del canvas)
  */
 function generarEstrelles(m) {
-    var estrelles = [];
-
+    estrelles = [];
     for (let i = 0; i < m.stars; i++) {
         var estrella = new Star();
         estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
@@ -214,8 +213,11 @@ function generarEstrelles(m) {
  */
 
 function moureNau(ws, m) {
-    console.log(m.key)
-    let spaceShip = updateSpaceShipXY(m.nau, m.key);
+    estrelles = m.stars;
+    let spaceShip = updateSpaceShipXY(m.nau, m.key); 
+    for(let i = 0; i < estrelles.length; i++) {
+       checkStarCollect(spaceShip, estrelles[i])
+    }
     for (let nau of jugadors) {
         if (nau.id == spaceShip.id) {
             nau.id = spaceShip.id;
@@ -226,13 +228,11 @@ function moureNau(ws, m) {
             nau.star = spaceShip.star;
         }
     }
-    console.log(jugadors);
-    broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors }));
+    broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors, stars: estrelles }));
 }
 
 // Update positions
 function updateSpaceShipXY(nau, keysPress) {
-    //console.log(keysPress);
     if ("ArrowUp" in keysPress || "w" in keysPress)
         nau.y > -64 ? nau.y -= nau.speed : nau.y = alcada;
     // Moure nau abaix
@@ -245,4 +245,25 @@ function updateSpaceShipXY(nau, keysPress) {
     if ("ArrowRight" in keysPress || "d" in keysPress)
         nau.x < amplada ? nau.x += nau.speed : nau.x = -64;
     return nau;
+}
+
+// Update Stars
+function checkStarCollect(spaceShip, star) {
+    if (
+        spaceShip.x <= (star.x + 32) &&
+        star.x <= (spaceShip.x + 64) &&
+        spaceShip.y <= (star.y + 32) &&
+        star.y <= (spaceShip.y + 64)
+    ) {
+        for (let i = 0; i < estrelles.length; i++) {
+            if (star.id == estrelles[i].id) {
+                estrelles.splice(i, 1);
+            }
+        }
+        for(let ship of jugadors) {
+            if (ship.id == spaceShip.id) {
+                spaceShip.star++;
+            }
+        }
+    }
 }
