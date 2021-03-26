@@ -75,7 +75,6 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
     remitent.on('message', message => {
-        console.log("Receive : " + message + " from " + peticio.id);
         processar(remitent, message);
     });
     remitent.onclose = () => {

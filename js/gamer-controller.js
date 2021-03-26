@@ -83,7 +83,6 @@ function updateCanvas(nau) {
     nau.img = new Image();
     if (nau.id == spaceShip.id) {
         spaceShip = nau;
-        console.log(nau)
         puntuacio.innerText = nau.star;
         nau.img.src = "../images/nau64px.png";
     } else {
