@@ -22,6 +22,7 @@ function getCanvas() {
             setCanvas(canvas, alcada.value, amplada.value)
             setEstrelles(estrelles.value, alcada.value, amplada.value)
             gamePaused = false;
+            console.log("El joc està corrent");
         }
     })
 
@@ -29,6 +30,7 @@ function getCanvas() {
         if(!gamePaused){
             connexio.send(JSON.stringify({ action: "changeStars", gamePaused:gamePaused}))
             gamePaused = true;
+            console.log("El joc s'ha pausat");
         }
     })
 }

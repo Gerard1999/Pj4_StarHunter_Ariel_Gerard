@@ -75,7 +75,6 @@ const wss = new WebSocket.Server({ port: 8180 });
 
 wss.on('connection', (remitent, peticio) => {
     remitent.on('message', message => {
-        console.log("Receive : " + message + " from " + peticio.id);
         processar(remitent, message);
     });
     remitent.onclose = () => {
@@ -153,17 +152,17 @@ function processar(ws, missatge) {
             console.log(gamePaused);
             if (gamePaused) {
                 console.log("setInterval");
-                setInterval(function() {
+                var crearEstrelles = setInterval(function() {
                     generarEstrelles(message, estrelles, numEstrella);
-                    numEstrella++;
-                }, 2000);
+                },2000);
+                numEstrella++;
             } else {
-                clearInterval(generarEstrelles);
+                clearInterval(crearEstrelles);
                 console.log("hey");
             }
             break;
         case "move":
-            console.log("Moving...");
+            //console.log("Moving...");
             moureNau(ws, message)
             break;
     }
