@@ -1,4 +1,5 @@
 var naus = [];
+var gamePaused = true;
 
 /**
  * Funció per canviar les mesures del canvas.
@@ -10,13 +11,25 @@ function getCanvas() {
     let amplada = document.getElementById("amplada");
     let estrelles = document.getElementById("estrelles");
     let play = document.querySelector(".play");
-    // Default values witdh and height
+    let pause = document.querySelector(".pause");
+    // Default values width and height
     alcada.value = canvas.clientHeight;
     amplada.value = canvas.clientWidth;
 
     play.addEventListener("click", () => {
-        setCanvas(canvas, alcada.value, amplada.value)
-        setEstrelles(estrelles.value, alcada.value, amplada.value)
+        
+        if(gamePaused){
+            setCanvas(canvas, alcada.value, amplada.value)
+            setEstrelles(estrelles.value, alcada.value, amplada.value)
+            gamePaused = false;
+        }
+    })
+
+    pause.addEventListener("click", () => {
+        if(!gamePaused){
+            connexio.send(JSON.stringify({ action: "changeStars", gamePaused:gamePaused}))
+            gamePaused = true;
+        }
     })
 }
 
@@ -26,7 +39,7 @@ function getCanvas() {
 function setCanvas(canvas, alcada, amplada) {
     canvas.width = amplada;
     canvas.height = alcada;
-    connexio.send(JSON.stringify({ action: "changeSize", amplada: amplada, alcada: alcada }))
+    connexio.send(JSON.stringify({ action: "changeSize", amplada: amplada, alcada: alcada}))
 }
 
 /**
@@ -36,7 +49,7 @@ function setCanvas(canvas, alcada, amplada) {
  * @param amplada: Num de l'amplada de l'input
  */
 function setEstrelles(estrelles, alcada, amplada) {
-    connexio.send(JSON.stringify({ action: "changeStars", stars: estrelles, alcada: alcada, amplada: amplada }))
+    connexio.send(JSON.stringify({ action: "changeStars", stars: estrelles, alcada: alcada, amplada: amplada, gamePaused:gamePaused}))
 }
 
 /**
