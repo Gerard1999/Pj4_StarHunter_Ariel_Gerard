@@ -30,6 +30,7 @@ function getCanvas() {
             gamePaused = false;
         }else{
             gamePaused = true;
+            console.log("El joc s'ha pausat");
         }
     })
 }
