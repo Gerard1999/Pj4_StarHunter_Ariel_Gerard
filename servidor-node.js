@@ -111,6 +111,7 @@ var jugadors = [];
 
 var estrelles = [];
 var numEstrella = 0;
+var intervalStar; // Variable que contindrá la funció de generarEstrella
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -127,6 +128,7 @@ var gamePaused = false;
  * @param ws: Connexió socket del client
  * @param m: Missatge rebut
  */
+
 function processar(ws, missatge) {
     var message = JSON.parse(missatge);
 
@@ -150,15 +152,14 @@ function processar(ws, missatge) {
             estrelles = [];
             gamePaused = message.gamePaused;
             console.log(gamePaused);
-            if (gamePaused) {
+            if (!gamePaused) {
                 console.log("setInterval");
-                setInterval(function() {
+                GamePlay = setInterval(function() {
                     generarEstrelles(message, estrelles, numEstrella);
-                    numEstrella++;
-                }, 2000);
-            } else {
-                clearInterval(generarEstrelles);
-                console.log("hey");
+                }, 1000);
+            }
+            if(gamePaused) {
+                clearInterval(GamePlay)
             }
             break;
         case "move":
@@ -219,7 +220,7 @@ function generarEstrelles(m, estrelles, numEstrella) {
     estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
     estrella.id = numEstrella;
     estrelles.push(estrella);
-
+    numEstrella++;
     broadcast(JSON.stringify({ msg: "paintingStars", coordenades: estrelles }));
 }
 

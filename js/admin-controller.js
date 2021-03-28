@@ -1,5 +1,5 @@
 var naus = [];
-var gamePaused = true;
+var gamePaused = false;
 
 /**
  * Funció per canviar les mesures del canvas.
@@ -17,17 +17,18 @@ function getCanvas() {
     amplada.value = canvas.clientWidth;
 
     play.addEventListener("click", () => {
-        
-        if(gamePaused){
+        if(!gamePaused){
             setCanvas(canvas, alcada.value, amplada.value)
             setEstrelles(estrelles.value, alcada.value, amplada.value)
-            gamePaused = false;
+            gamePaused = true;
         }
     })
 
     pause.addEventListener("click", () => {
-        if(!gamePaused){
+        if(gamePaused){
             connexio.send(JSON.stringify({ action: "changeStars", gamePaused:gamePaused}))
+            gamePaused = false;
+        }else{
             gamePaused = true;
         }
     })
