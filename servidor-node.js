@@ -107,10 +107,10 @@ function broadcast(missatge, clientExclos) {
 /****************************
  * 		DADES GENERALS
  ***************************/
-var jugadors = [];
+var jugadors = []; //Array de Jugadors
+var estrelles = []; //Array d'estrelles
 
-var estrelles = [];
-var numEstrella = 0;
+var numEstrella = 0; //Id primera estrella
 var intervalStar; // Variable que contindrá la funció de generarEstrella
 
 // Últim identificador assignat
@@ -120,6 +120,8 @@ var amplada = 0
 var alcada = 0;
 
 var gamePaused = false;
+
+var estrellesAAconseguir;
 
 
 /**
@@ -151,9 +153,8 @@ function processar(ws, missatge) {
             console.log("Changing Stars value...");
             estrelles = [];
             gamePaused = message.gamePaused;
-            console.log(gamePaused);
+            estrellesAAconseguir = message.stars;
             if (!gamePaused) {
-                console.log("setInterval");
                 GamePlay = setInterval(function() {
                     generarEstrelles(message, estrelles, numEstrella);
                 }, 1000);
@@ -164,7 +165,9 @@ function processar(ws, missatge) {
             break;
         case "move":
             //console.log("Moving...");
-            moureNau(ws, message)
+            if(!gamePaused){
+                moureNau(ws, message)
+            }
             break;
     }
 }
@@ -284,9 +287,12 @@ function checkStarCollect(spaceShip, star) {
         for(let ship of jugadors) {
             if (ship.id == spaceShip.id) {
                 spaceShip.star++;
-                /*if(spaceShip.star == estrellesAAconseguir){
-                    finishGame
-                }*/
+                if(spaceShip.star == estrellesAAconseguir){
+                    gamePaused = true;
+                    console.log("S'ha arribat a la puntuació estipulada: " + estrellesAAconseguir + " estrelles!" );
+                    clearInterval(GamePlay);
+                    broadcast(JSON.stringify({ msg: "finishedGame"}));
+                }
             }
         }
     }

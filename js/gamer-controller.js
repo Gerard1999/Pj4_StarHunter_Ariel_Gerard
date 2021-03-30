@@ -21,6 +21,8 @@ var naus = [];
 //Puntuació del Jugador
 var puntuacio = document.getElementById("estrelles");
 
+var finishedGame = false;
+
 /**
  * Funció que ubica totes les naus creades i mogudes fins ara.
  *
@@ -37,6 +39,13 @@ function createNau(nau) {
         puntuacio.innerText = 0;
         centerNau(nau); // Centrar la nau
         existNau = true;
+        Game.ctx.fillStyle= 'rgb(145, 174, 236)';
+        Game.ctx.font = "italic bold 35pt Tahoma";
+        Game.ctx.fillText("Star Hunters",amplada/2,altura/2);
+
+        if (finishedGame) {
+            //Printa resultats
+        }
     }
 }
 
@@ -105,6 +114,16 @@ function printarEstrelles(coordenadesEstrelles) {
     }
 }
 
+/**
+ * Funció que printa els resultats finals de les naus
+ */
+function printResults(){
+    console.log(naus);
+    Game.ctx.fillStyle= 'red';
+    Game.ctx.font = "italic bold 35pt Tahoma";
+    Game.ctx.fillText("S'ha Acabat la partida",amplada/2,altura);
+}
+
 /* Funció per obrir i tencar una sessió*/
 function openConnection() {
     connexio.onopen = function() { // Obrir sessió
@@ -149,6 +168,10 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                     updateCanvas(nau);
                 }
                 break;
+            case "finishedGame":
+                finishedGame = true;
+                printResults();
+                break;    
         }
     }
 }
