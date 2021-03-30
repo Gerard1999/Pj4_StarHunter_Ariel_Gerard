@@ -29,20 +29,14 @@ var puntuacio = document.getElementById("estrelles");
  */
 function createNau(nau) {
     if (!existNau) {
-        nau.x = Game.canvas.clientWidth / 2 - 32;
-        nau.y = Game.canvas.clientHeight - 64;
         nau.img = new Image();
         nau.img.src = "../images/nau64px.png";
         spaceShip = nau;
         puntuacio.innerText = 0;
-        centerNau(nau); // Centrar la nau
+        Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
+        nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
         existNau = true;
     }
-}
-
-function centerNau(nau) {
-    Game.ctx.fillStyle = '#b6ddf6'; // Background del Canvas
-    nau.img.onload = () => { Game.ctx.drawImage(spaceShip.img, spaceShip.x, spaceShip.y) }; // Centren l'imatge
 }
 
 /**
@@ -53,6 +47,7 @@ function centerNau(nau) {
 function moureNau(keyPress) {
     if (connexio) {
         connexio.send(JSON.stringify({ action: "move", nau: spaceShip, key: keyPress, stars: coordenadesEstrelles }));
+        console.log(spaceShip)
     }
 }
 
@@ -127,6 +122,7 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
             case "connected":
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
+                console.log(missatge.nau)
                 createNau(missatge.nau); // Crear la nau
                 break;
             case "modifyGameClient":

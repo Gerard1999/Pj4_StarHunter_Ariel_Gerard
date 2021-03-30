@@ -149,18 +149,7 @@ function processar(ws, missatge) {
             break;
         case "changeStars":
             console.log("Changing Stars value...");
-            estrelles = [];
-            gamePaused = message.gamePaused;
-            console.log(gamePaused);
-            if (!gamePaused) {
-                console.log("setInterval");
-                GamePlay = setInterval(function() {
-                    generarEstrelles(message, estrelles, numEstrella);
-                }, 1000);
-            }
-            if(gamePaused) {
-                clearInterval(GamePlay)
-            }
+            canviarValorEstrelles(message);
             break;
         case "move":
             //console.log("Moving...");
@@ -192,8 +181,22 @@ function crearJugador(ws) {
     spaceShip.id = jugadorID;
     ws.id = jugadorID;
     jugadors.push(spaceShip);
-    ws.send(JSON.stringify({ msg: "connected", amplada: amplada, alcada: alcada, nau: spaceShip }));
     jugadorID++;
+    centerNau(spaceShip); // Asignem les posicions X e Y per centrar la nau en el canvas
+    ws.send(JSON.stringify({ msg: "connected", nau: spaceShip }));
+}
+/**
+ * Funció per centrar la nau en el Canvas
+ * @param ws: 
+ * @param nau: nau rebuda per poder centrar-la dintre del admin
+ */
+ function centerNau(nau){
+    for (let spaceShip of jugadors) {
+        if(nau.id == spaceShip.id) {
+            nau.x = amplada / 2 - 32;
+            nau.y = alcada - 64;
+        }
+    }
 }
 
 
@@ -207,6 +210,26 @@ function crearJugador(ws) {
 function canviarMides(ws, m) {
     broadcast(JSON.stringify({ msg: "connected", amplada: m.amplada, alcada: m.alcada }));
 }
+
+/**
+ * Funció per controlar el nombre de estrelles enviades desde el administrador
+ * @param ws: Missatge rebut del administrador 
+ */
+
+function canviarValorEstrelles(m){
+    estrelles = [];
+    gamePaused = m.gamePaused;
+    if (!gamePaused) {
+        console.log("setInterval");
+        GamePlay = setInterval(function() {
+            generarEstrelles(m, estrelles, numEstrella);
+        }, 3000);
+    }
+    if(gamePaused) {
+        clearInterval(GamePlay)
+    }
+}
+
 
 /**
  * Funció que reb el nombre d'estrelles rebudes
@@ -241,12 +264,7 @@ function moureNau(ws, m) {
     }
     for (let nau of jugadors) {
         if (nau.id == spaceShip.id) {
-            nau.id = spaceShip.id;
-            nau.x = spaceShip.x;
-            nau.y = spaceShip.y;
-            nau.cosnau = spaceShip.cosnau;
-            nau.speed = spaceShip.speed;
-            nau.star = spaceShip.star;
+            nau = Object.assign(nau, spaceShip); // Actualitzem les propietats de la nau del client dintre de l'array de naus
         }
     }
     broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors, stars: estrelles }));

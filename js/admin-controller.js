@@ -27,10 +27,8 @@ function getCanvas() {
     pause.addEventListener("click", () => {
         if(gamePaused){
             connexio.send(JSON.stringify({ action: "changeStars", gamePaused:gamePaused}))
+            alert("Joc Pausat")
             gamePaused = false;
-        }else{
-            gamePaused = true;
-            console.log("El joc s'ha pausat");
         }
     })
 }
