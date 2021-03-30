@@ -17,6 +17,9 @@
 .quadreJoc .puntuacio {
   display: flex;
 }
+.quadreJoc .identificacio {
+  display: flex;
+}
 .quadreJoc #configuracio {
   padding: 1.6rem;
   display: flex;

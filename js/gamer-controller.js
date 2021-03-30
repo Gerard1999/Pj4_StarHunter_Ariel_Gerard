@@ -36,6 +36,7 @@ function createNau(nau) {
         nau.img = new Image();
         nau.img.src = "../images/nau64px.png";
         spaceShip = nau;
+        document.getElementById("id-player").textContent = spaceShip.id;
         puntuacio.innerText = 0;
         centerNau(nau); // Centrar la nau
         existNau = true;
@@ -118,10 +119,21 @@ function printarEstrelles(coordenadesEstrelles) {
  * Funció que printa els resultats finals de les naus
  */
 function printResults(){
-    console.log(naus);
-    Game.ctx.fillStyle= 'red';
-    Game.ctx.font = "italic bold 35pt Tahoma";
-    Game.ctx.fillText("S'ha Acabat la partida",amplada/2,altura);
+    var results = "";
+    //var linia = 20;
+    /*Game.ctx.fillStyle= 'red';
+    Game.ctx.font = "italic bold 15pt Tahoma";
+    Game.ctx.fillText("S'ha Acabat la partida",amplada,altura);*/
+    for (const nau of naus) {
+        /*Game.ctx.fillStyle = 'red';
+        Game.ctx.font = "italic bold 15pt Tahoma";
+        Game.ctx.fillText("ID: " + nau.id + " - estrelles: " + nau.star + "\n",amplada/2,linia);*/
+
+        results += "Usuari: " + nau.id + " - estrelles: " + nau.star + "\n";
+        //linia+=10;
+    }
+    alert(results);
+    
 }
 
 /* Funció per obrir i tencar una sessió*/
