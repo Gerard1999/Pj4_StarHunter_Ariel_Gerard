@@ -112,7 +112,6 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                 }
                 naus = missatge.naus;
                 for (let nau of missatge.naus) {
-                    console.table(nau);
                     updateCanvasAdmin(nau);
                 }
                 break;

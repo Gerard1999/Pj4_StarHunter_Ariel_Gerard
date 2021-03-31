@@ -111,7 +111,7 @@ var jugadors = []; //Array de Jugadors
 var estrelles = []; //Array d'estrelles
 
 var numEstrella = 0; //Id primera estrella
-var intervalStar; // Variable que contindrá la funció de generarEstrella
+var playGame; // Variable que contindrá la funció de generarEstrella
 
 // Últim identificador assignat
 var jugadorID = 0;
@@ -120,6 +120,7 @@ var amplada = 0
 var alcada = 0;
 
 var gamePaused = false;
+var displayButtonPlay = false;
 
 var estrellesAAconseguir;
 
@@ -139,6 +140,9 @@ function processar(ws, missatge) {
             console.log("Creating Admin...");
             crearAdmin(ws);
             break;
+        case "checkPlayGame":
+            displayButton();
+            break;
         case "addPlayer":
             console.log("Creating Player...");
             crearJugador(ws);
@@ -150,6 +154,8 @@ function processar(ws, missatge) {
             canviarMides(ws, message);
             break;
         case "changeStars":
+            displayButtonPlay = true; // Activen el botó per poder jugar
+            gamePaused = message.gamePaused; 
             console.log("Changing Stars value...");
             canviarValorEstrelles(message);
             break;
@@ -187,7 +193,7 @@ function crearJugador(ws) {
     jugadors.push(spaceShip);
     jugadorID++;
     centerNau(spaceShip); // Asignem les posicions X e Y per centrar la nau en el canvas
-    ws.send(JSON.stringify({ msg: "connected", nau: spaceShip }));
+    ws.send(JSON.stringify({ msg: "connected", nau: spaceShip, amplada: amplada, alcada: alcada }));
 }
 /**
  * Funció per centrar la nau en el Canvas
@@ -203,6 +209,13 @@ function crearJugador(ws) {
     }
 }
 
+/**
+ * Funció per mostrar el botó per jugar
+ */
+
+function displayButton(){
+    broadcast(JSON.stringify({ msg: "displayButtonPlay", showPlayButton: displayButtonPlay }));
+}
 
 /**
  * Aquesta funció actualitza les noves mides del canvas rebudes des de l'admin
@@ -211,8 +224,8 @@ function crearJugador(ws) {
  * @param ws: Connexió socket del client
  * @param m: Missatge rebut
  */
-function canviarMides(ws, m) {
-    broadcast(JSON.stringify({ msg: "connected", amplada: m.amplada, alcada: m.alcada }));
+function canviarMides() {
+    broadcast(JSON.stringify({ msg: "modifyGameClient", amplada: amplada, alcada: alcada }));
 }
 
 /**
@@ -222,15 +235,13 @@ function canviarMides(ws, m) {
 
 function canviarValorEstrelles(m){
     estrelles = [];
-    gamePaused = m.gamePaused;
     if (!gamePaused) {
-        console.log("setInterval");
-        GamePlay = setInterval(function() {
-            generarEstrelles(m, estrelles, numEstrella);
+        playGame = setInterval(function() {
+            generarEstrelles(m, estrelles);
         }, 3000);
     }
     if(gamePaused) {
-        clearInterval(GamePlay)
+        clearInterval(playGame)
     }
 }
 
@@ -241,7 +252,7 @@ function canviarValorEstrelles(m){
  * @param message: Missatge rebut (conté nombre d'estrelles, nombre de l'alçada
  * i l'amplada del canvas)
  */
-function generarEstrelles(m, estrelles, numEstrella) {
+function generarEstrelles(m, estrelles) {
     var estrella = new Star();
     estrella.x = Math.random() * (m.amplada - estrella.cosestrella);
     estrella.y = Math.random() * (m.alcada - estrella.cosestrella);
@@ -271,6 +282,7 @@ function moureNau(ws, m) {
             nau = Object.assign(nau, spaceShip); // Actualitzem les propietats de la nau del client dintre de l'array de naus
         }
     }
+    console.log(jugadors);
     broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors, stars: estrelles }));
 }
 
@@ -312,6 +324,9 @@ function checkStarCollect(spaceShip, star) {
                     clearInterval(GamePlay);
                     broadcast(JSON.stringify({ msg: "finishedGame"}));
                 }
+            }
+            if(gamePaused) {
+                ship.star = 0;
             }
         }
     }

@@ -57,7 +57,6 @@ function createNau(nau) {
 function moureNau(keyPress) {
     if (connexio) {
         connexio.send(JSON.stringify({ action: "move", nau: spaceShip, key: keyPress, stars: coordenadesEstrelles }));
-        console.log(spaceShip)
     }
 }
 
@@ -153,7 +152,6 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
             case "connected":
                 Game.canvas.width = missatge.amplada;
                 Game.canvas.height = missatge.alcada;
-                console.log(missatge.nau)
                 createNau(missatge.nau); // Crear la nau
                 break;
             case "modifyGameClient":
@@ -172,6 +170,7 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
                     printarEstrelles(missatge.stars);
                 }
                 naus = missatge.naus;
+                console.log(naus)
                 for (let nau of missatge.naus) {
                     updateCanvas(nau);
                 }
