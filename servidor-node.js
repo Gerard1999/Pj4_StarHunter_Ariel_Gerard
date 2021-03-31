@@ -155,7 +155,8 @@ function processar(ws, missatge) {
             break;
         case "changeStars":
             displayButtonPlay = true; // Activen el botó per poder jugar
-            gamePaused = message.gamePaused; 
+            gamePaused = message.gamePaused;
+            estrellesAAconseguir = message.stars;
             console.log("Changing Stars value...");
             canviarValorEstrelles(message);
             break;
@@ -321,7 +322,7 @@ function checkStarCollect(spaceShip, star) {
                 if(spaceShip.star == estrellesAAconseguir){
                     gamePaused = true;
                     console.log("S'ha arribat a la puntuació estipulada: " + estrellesAAconseguir + " estrelles!" );
-                    clearInterval(GamePlay);
+                    clearInterval(playGame);
                     broadcast(JSON.stringify({ msg: "finishedGame"}));
                 }
             }
