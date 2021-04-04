@@ -10,6 +10,7 @@ var Game = (function() {
         keysPress: {},
         move: false,
         existStar: false,
+        existAdmin: false,
         render: requestAnimationFrame
     }
 }())

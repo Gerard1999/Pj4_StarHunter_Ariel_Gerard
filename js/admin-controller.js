@@ -99,6 +99,12 @@ function receiveMessage() { /* Quan arriba un missatge, mostrar-lo per consola *
         let missatge = JSON.parse(message.data);
         console.log(missatge);
         switch (missatge.msg) {
+            case "oneAdmin": // Si existeix un administrador redireccionarà cap al index
+                Game.existAdmin = missatge.existAdmin;
+                if(Game.existAdmin) {
+                    window.location = "../index.html";
+                }
+                break;
             case "paintingStars":
                 coordenadesEstrelles = missatge.coordenades;
                 printarEstrelles(coordenadesEstrelles);

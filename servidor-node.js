@@ -4,6 +4,7 @@ var Star = require('./js/Star.js'); // Importem la clase Star
 var http = require('http');
 var path = require('path');
 var fs = require('fs');
+var existAdmin = false;
 
 // Tipus de extensions permesses
 const FILE_TYPES = {
@@ -46,6 +47,9 @@ var server = http.createServer((req, res) => {
         if (req.method == 'GET') { // Si la petició es Get...
             const baseURL = 'http://' + req.headers.host + '/'; // obtenemos la URL (http://localhost/)
             dades = new URL(req.url, baseURL); // Creem una nova URL (req.url = index.html por ejemplo)
+            if(dades.pathname == '/admin/admin.html' || !existAdmin){
+                //existAdmin = true;
+            };
             var filename = `.${dades.pathname}`; // obtenim el path de tots els fitxers que depenen del html, com per exemple el CSS 
             if (filename == "./") filename += "index.html"; // Posar per defecte el index.html
             var tipusDocument = contentType(filename); // Obtenim el tipus de document text/html, text/css, etc.
@@ -83,6 +87,10 @@ wss.on('connection', (remitent, peticio) => {
 });
 
 function tancarSessio(ws) {
+    // Administrador
+    if(ws.id == -1) {
+        existAdmin = false;
+    }
     jugadors.forEach(function(jugador, index, objecte) {
         if (jugador.id == ws.id) {
           objecte.splice(index, 1);
@@ -177,7 +185,14 @@ function processar(ws, missatge) {
  * @param ws: Connexió socket del client
  */
 function crearAdmin(ws) {
-
+    if(!existAdmin){
+        console.log("Admin creat!")
+        ws.id = -1;
+        existAdmin = true;
+    } else if (existAdmin) {
+        console.log("Ja existeix un administrador");
+        ws.send(JSON.stringify({ msg: "oneAdmin", existAdmin: existAdmin }));
+    }
 }
 
 /**
@@ -283,7 +298,6 @@ function moureNau(ws, m) {
             nau = Object.assign(nau, spaceShip); // Actualitzem les propietats de la nau del client dintre de l'array de naus
         }
     }
-    console.log(jugadors);
     broadcast(JSON.stringify({ msg: "moveSpaceShip", naus: jugadors, stars: estrelles }));
 }
 
